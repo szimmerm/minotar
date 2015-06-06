@@ -90,7 +90,9 @@ public class MovingObject : MonoBehaviour {
 			internal_values.should_update_direction = false;
 		}
 		yield return new WaitForSeconds(wait_before_dash_time - dash_wait_noise + Random.Range (0, 2*dash_wait_noise));
+		internal_values.attacking = true;
 		yield return StartCoroutine(dash_coroutine());
+		internal_values.attacking = false;
 		if (!should_update_direction) {
 			internal_values.should_update_direction = true;
 		}		

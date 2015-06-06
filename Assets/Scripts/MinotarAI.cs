@@ -13,14 +13,14 @@ public class MinotarAI : MonoBehaviour {
 	private ObjectValues internal_values;
 	private MovingObject move_script;
 
-	private bool can_dash = false;
+	private bool can_dash = true;
 
 	void Awake() {
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		internal_values = GetComponent<ObjectValues>();
 		sqrdistance_check = distance_check * distance_check;
 		move_script = GetComponent<MovingObject>();
-		StartCoroutine(can_dash_coroutine());
+//		StartCoroutine(can_dash_coroutine());
 	}
 
 	// Use this for initialization

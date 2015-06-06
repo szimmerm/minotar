@@ -6,6 +6,7 @@ public class ObjectValues : MonoBehaviour {
 	public Vector2 direction;
 	public bool should_update_direction = true;
 	public bool alive = true;
+	public bool attacking = false;
 
 	// Use this for initialization
 	void Start () {
