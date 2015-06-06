@@ -1,0 +1,74 @@
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+public class CreatureSpawner : MonoBehaviour, IReset {
+
+	public GameObject[] controlled_creatures;
+	public Transform[] spawn_positions;
+	public float spawn_interval = 20.0f;
+	public GameObject spawn_animation;
+	public float spawn_animation_duration;
+
+	private HashSet<SpawnControlledElement> active_creatures;
+
+	private void Awake() {
+		active_creatures = new HashSet<SpawnControlledElement>();
+	}
+
+	void Start() {
+		ResetScript.register_in_controller (this);
+		start_spawning();
+	}
+
+	private Vector3 choose_spawn_position() {
+		Vector3 spawn_position = spawn_positions[(int)Mathf.Floor (Random.Range(0, spawn_positions.Length))].position;
+		return new Vector3(spawn_position.x, spawn_position.y, 2);
+	}
+
+	private GameObject choose_creature_type() {
+		return controlled_creatures[(int)Mathf.Floor (Random.Range (0, controlled_creatures.Length))];
+	}
+
+	private void call_spawn_creature() {
+		StartCoroutine(spawn_creature_coroutine());
+	}
+
+	private IEnumerator spawn_creature_coroutine() {
+		Vector3 spawn_position = choose_spawn_position();
+		GameObject creature_type = choose_creature_type();
+
+		GameObject spawn_flashing = (GameObject) Instantiate (this.spawn_animation, spawn_position, Quaternion.identity);
+		Destroy(spawn_flashing, this.spawn_animation_duration);
+		yield return new WaitForSeconds(this.spawn_animation_duration);
+
+		GameObject spawn_creature = (GameObject) Instantiate(creature_type, spawn_position, Quaternion.identity);
+//		spawn_creature.transform.parent = this.transform.parent;
+		spawn_creature.GetComponent<SpawnControlledElement>().controller = this;
+		active_creatures.Add (spawn_creature.GetComponent<SpawnControlledElement>());
+	}
+
+	private void register_creature(SpawnControlledElement creature) {
+		active_creatures.Add (creature);
+	}
+
+	public void unregister_creature(SpawnControlledElement creature){
+		active_creatures.Remove (creature);
+	}
+
+	public void on_reset() {
+		foreach (SpawnControlledElement spawned_creature in active_creatures) {
+			GameObject.Destroy(spawned_creature.gameObject, 0.0f);
+		}
+		start_spawning();
+	}
+
+	public void start_spawning() {
+		// InvokeRepeating("call_spawn_creature", 1.0f, spawn_interval);
+		call_spawn_creature();
+	}
+	
+	public void stop_spawning() {
+		// CancelInvoke("call_spawn_creature");
+	}
+}
