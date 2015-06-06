@@ -11,6 +11,7 @@ public class HealthScript : MonoBehaviour, IReset {
 	public float invincibility_timer = 0.5f;
 	
 	public Slider health_slider; //a changer pour plus que ça soit public, ca
+	public Transform skelt_transform;
 
 	private SpriteRenderer sprite_renderer;
 	private GameControllerScript game_controller;
@@ -80,12 +81,20 @@ public class HealthScript : MonoBehaviour, IReset {
 		this.move_controller.able_to_move = false;
 		this.dash_particles.Stop ();
 		this.dash_particles.Clear ();
+		
+		this.invulnerable = true;
+		this.sprite_renderer.enabled = false;
+
+		Transform skelt = Instantiate(skelt_transform);
+		skelt.position = new Vector3(this.transform.position.x, this.transform.position.y, 1);
 	}
 
 	public void on_reset() {
 		init_values();
 		this.move_controller.able_to_move = true;
+		this.invulnerable = false;
 		this.dash_particles.Play ();
+		this.sprite_renderer.enabled = true;
 	}
 
 }
