@@ -5,6 +5,7 @@ public class ObstacleSpawner : MonoBehaviour {
 
 	public float spawn_delay;
 	public float start_time;
+	public Vector2 grid_offset;
 
 	private float cube_size = 41;
 	private GameObject[] blocs;
@@ -49,7 +50,7 @@ public class ObstacleSpawner : MonoBehaviour {
 	public void align_blocs() {
 		foreach(Transform pattern in this.transform) {
 			foreach(Transform bloc in pattern) {
-				bloc.position = align_position(bloc.position);
+				bloc.position = align_position(bloc.position - (Vector3)grid_offset) + (Vector3)grid_offset; 
 			}
 		}	
 	}
