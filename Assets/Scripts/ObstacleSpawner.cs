@@ -4,36 +4,52 @@ using System.Collections;
 public class ObstacleSpawner : MonoBehaviour {
 
 	public float spawn_delay;
+	public float start_time;
 
 	private float cube_size = 41;
 	private GameObject[] blocs;
 	private int max_size;	
 
 	void Awake() {
-		initialize_pattern();
 		align_blocs();
+		disable_all_patterns();
+		initialize_pattern();
 	}	
 
 	// Use this for initialization
 	void Start () {
-		InvokeRepeating("spawn_bloc", spawn_delay, spawn_delay);	
+		InvokeRepeating("spawn_bloc", start_time, spawn_delay);	
+	}
+
+	private void disable_current_pattern() {
+		foreach(GameObject bloc in blocs) {
+			bloc.SetActive(false);
+		}
+	}
+
+	private void disable_all_patterns() {
+		foreach (Transform pattern_container in this.transform) {
+			foreach(Transform bloc in pattern_container) {
+				bloc.gameObject.SetActive (false);
+			}
+		}
 	}
 
 	private void initialize_pattern() {
-		Transform selected_pattern = this.transform;
-
+		Transform selected_pattern = this.transform.GetChild (Mathf.FloorToInt (Random.Range (0, this.transform.childCount)));
 		this.max_size = selected_pattern.childCount;
 		blocs = new GameObject[this.max_size];
 		for(int i = 0; i < this.max_size ; i++) {
 			blocs[i] = selected_pattern.GetChild(i).gameObject;
-			blocs[i].SetActive (false);
 		}
 	}
 
-	private void align_blocs() {
-		for(int i = 0 ; i < blocs.Length; i++) {
-			blocs[i].transform.position = align_position(blocs[i].transform.position);
-		}
+	public void align_blocs() {
+		foreach(Transform pattern in this.transform) {
+			foreach(Transform bloc in pattern) {
+				bloc.position = align_position(bloc.position);
+			}
+		}	
 	}
 
 	private float align_value(float orig) {
@@ -60,6 +76,7 @@ public class ObstacleSpawner : MonoBehaviour {
 	}
 	
 	public void restart() {
+		disable_current_pattern();
 		initialize_pattern();
 		InvokeRepeating("spawn_bloc", spawn_delay, spawn_delay);	
 	}
