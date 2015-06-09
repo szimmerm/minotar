@@ -28,7 +28,9 @@ public class ObstacleSpawner : MonoBehaviour {
 	}
 
 	private void disable_all_patterns() {
+		
 		foreach (Transform pattern_container in this.transform) {
+			pattern_container.gameObject.SetActive (true);
 			foreach(Transform bloc in pattern_container) {
 				bloc.gameObject.SetActive (false);
 			}
