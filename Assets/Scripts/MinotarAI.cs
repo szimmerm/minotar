@@ -12,14 +12,17 @@ public class MinotarAI : MonoBehaviour {
 	private Transform player;
 	private ObjectValues internal_values;
 	private MovingObject move_script;
+	private PathfindingManager pathfinder;
 
-	private bool can_dash = true;
+	private bool can_dash = false;
 
 	void Awake() {
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		internal_values = GetComponent<ObjectValues>();
 		sqrdistance_check = distance_check * distance_check;
 		move_script = GetComponent<MovingObject>();
+
+		pathfinder = GameObject.FindGameObjectWithTag ("Pathfinder").GetComponent<PathfindingManager>();
 //		StartCoroutine(can_dash_coroutine());
 	}
 
@@ -27,9 +30,28 @@ public class MinotarAI : MonoBehaviour {
 	void Start () {
 	
 	}
-	
+
+	private float get_sign(float value) {
+		if (value > 0.001) {
+			return 1f;
+		} else if (value < -0.001) {
+			return -1f;
+		} else {
+			return 0f;
+		}
+	}
+
+	private void go_towards_point(Vector2 point) {
+		Vector2 minus = (point - (Vector2)transform.position);
+		Debug.Log ("minus : "+minus);
+		internal_values.direction = new Vector2(get_sign(minus.x), get_sign(minus.y));
+		Debug.Log ("direction : "+internal_values.direction);
+	}
+
 	private void update_direction() {
-		internal_values.direction = (player.position - transform.position);
+//		go_towards_point(new Vector2(0, 0));
+		go_towards_point(pathfinder.get_smooth_next_move(transform.position));
+//		internal_values.direction = (player.position - transform.position);
 	}
 
 	private bool is_player_far() {

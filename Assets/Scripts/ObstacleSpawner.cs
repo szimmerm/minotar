@@ -10,11 +10,13 @@ public class ObstacleSpawner : MonoBehaviour {
 	private float cube_size = 41;
 	private GameObject[] blocs;
 	private int max_size;	
+	private PathfindingManager pathfinder;
 
 	void Awake() {
 		align_blocs();
 		disable_all_patterns();
 		initialize_pattern();
+		pathfinder = GameObject.FindGameObjectWithTag("Pathfinder").GetComponent<PathfindingManager>();
 	}	
 
 	// Use this for initialization
@@ -74,7 +76,9 @@ public class ObstacleSpawner : MonoBehaviour {
 
 	private void spawn_bloc() {
 		if (max_size > 0) {
-			choose_bloc().SetActive (true);
+			GameObject bloc = choose_bloc();
+			bloc.SetActive (true);
+			pathfinder.add_blocker(bloc.transform.position);
 		}
 	}
 	
