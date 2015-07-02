@@ -43,9 +43,7 @@ public class MinotarAI : MonoBehaviour {
 
 	private void go_towards_point(Vector2 point) {
 		Vector2 minus = (point - (Vector2)transform.position);
-		Debug.Log ("minus : "+minus);
 		internal_values.direction = new Vector2(get_sign(minus.x), get_sign(minus.y));
-		Debug.Log ("direction : "+internal_values.direction);
 	}
 
 	private void update_direction() {

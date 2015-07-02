@@ -7,7 +7,7 @@ public class DebugObstacle : MonoBehaviour {
 	void Start() {
 		pathfinder = GameObject.FindGameObjectWithTag("Pathfinder").GetComponent<PathfindingManager>();
 		foreach(Transform child in this.transform) {
-			pathfinder.add_blocker(child.position);
+			if (child != this.transform) pathfinder.add_blocker(child.position);
 		}
 	}	
 	

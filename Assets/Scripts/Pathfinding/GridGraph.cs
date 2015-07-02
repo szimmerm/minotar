@@ -29,7 +29,6 @@ public class GridGraph {
 				grid[i, j].reset ();
 			}
 		}
-		blocking_nodes = new HashSet<Node>();
 	}
 
 	private void put_node(Node node, List<Node> res) {
@@ -55,6 +54,12 @@ public class GridGraph {
 	}
 
 	public void build_bfs(Node root) {
+		string res = "blocking nodes :";
+		foreach(Node node in blocking_nodes) {
+			res += " ("+node.pos_x+" ; "+node.pos_y+")";
+		}
+		Debug.Log (res);
+
 		reset();
 		root.is_root = true;
 		Queue<Node> stack = new Queue<Node>();
@@ -72,7 +77,20 @@ public class GridGraph {
 		}
 	}
 
+	private void check_path(List<Node> path) {
+		foreach(Node node in path) {
+			if (blocking_nodes.Contains(node)) {
+				Debug.LogError ("le chemin contient une case invalide !!");
+				return;
+			}
+		}
+
+		Debug.Log ("chemin valide");
+	}
+
 	public List<Node> get_path_to_root(Node start) {
+		Debug.Log (start);
+
 		Node current = start;
 		List<Node> res = new List<Node>();
 		while(!current.is_root) {
@@ -80,6 +98,7 @@ public class GridGraph {
 			current = current.parent;
 		}
 		res.Add (current); // on rajoute la racine
+		check_path(res);
 		return res;
 	}
 
@@ -89,6 +108,6 @@ public class GridGraph {
 
 	public void add_blocking_node(Node node) {
 		blocking_nodes.Add (grid[node.pos_x, node.pos_y]);
-		Debug.Log ("setting "+node.pos_x+" ; "+node.pos_y+"as infranchissable");
+		Debug.LogError ("setting "+node.pos_x+" ; "+node.pos_y+" as infranchissable");
 	}
 }
