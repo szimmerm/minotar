@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class PathfindingManager : MonoBehaviour {
+public class PathfindingManager : MonoBehaviour, IReset {
 
 	public int width;
 	public int height;
@@ -19,6 +19,7 @@ public class PathfindingManager : MonoBehaviour {
 	void Awake() {
 		graph = new GridGraph(width, height);
 		player = GameObject.FindGameObjectWithTag("Player");
+		ResetScript.register_in_controller (this);
 		
 		// debug
 		line = gameObject.AddComponent<LineRenderer>();	
@@ -110,10 +111,8 @@ public class PathfindingManager : MonoBehaviour {
 		Debug.Log ("blocker coordinates : "+position);
 		graph.add_blocking_node(position_to_node(position));
 	}
-
-	void OnGizmosSelected() {
-		for(int i = 0; i < width; i++) {
-			
-		}
+	
+	public void on_reset() {
+		graph = new GridGraph(width, height);
 	}
 }
