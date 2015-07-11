@@ -83,6 +83,22 @@ public class PathfindingManager : MonoBehaviour, IReset {
 		return node_to_position(path[0]);
 	}
 
+	public Vector3 get_raw_next_move(Vector3 object_position) {
+		List<Node> path = graph.get_path_to_root(position_to_node(object_position));
+		return node_to_position((path.Count != 0) ? path[1] : path[0]);
+	}
+
+
+	private bool is_shortcut_valid(Vector2 start, Vector2 end) {
+//		return Physics2D.Linecast (start, end, 1 << LayerMask.NameToLayer ("Walls")).collider == null;
+
+		Vector2 direction = end - start;
+		Vector2 size = new Vector2(25, 25);
+		float distance = Vector2.Distance (start, end);
+
+		return Physics2D.BoxCast (start, size, 0f, direction, distance, 1 << LayerMask.NameToLayer ("Walls")).collider == null;
+	}
+
 	public Vector3 get_smooth_next_move(Vector3 object_position) {
 		List<Node> path = graph.get_path_to_root (position_to_node(object_position));
 		render_path(path);
@@ -98,7 +114,7 @@ public class PathfindingManager : MonoBehaviour, IReset {
 		path.Reverse ();
 		foreach(Node node in path) {
 			Vector2 current = node_to_position(node);
-			if (Physics2D.Linecast (start, current, 1 << LayerMask.NameToLayer ("Walls")).collider == null) {
+			if (is_shortcut_valid(start, current)) {
 				Debug.Log ("next move"+current);
 				return current;
 			}

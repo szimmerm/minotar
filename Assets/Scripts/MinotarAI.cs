@@ -7,6 +7,7 @@ public class MinotarAI : MonoBehaviour {
 	public float distance_check = 130f;
 	public float dash_reload_time = 1f;
 	public float blind_dash_chance = 0.3f;
+
 	private float sqrdistance_check;
 
 	private Transform player;
@@ -56,7 +57,7 @@ public class MinotarAI : MonoBehaviour {
 	private bool is_player_far() {
 		return Vector3.SqrMagnitude(player.position - this.transform.position) > sqrdistance_check;
 	}
-
+	
 	private IEnumerator can_dash_coroutine() {
 		can_dash = false;
 		yield return new WaitForSeconds(dash_reload_time);

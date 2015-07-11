@@ -38,7 +38,7 @@ public class HealthScript : MonoBehaviour, IReset {
 
 	private void init_health_slider() {
 		this.health_slider.maxValue = this.base_health;
-		this.health_slider.value = 0;
+		this.health_slider.value = this.current_health;
 	}
 
 	public void OnTriggerStay2D(Collider2D collision_data) {
@@ -49,7 +49,7 @@ public class HealthScript : MonoBehaviour, IReset {
 
 	private void take_damage() {
 		this.current_health--;
-		this.health_slider.value = (this.base_health - this.current_health);
+		this.health_slider.value = this.current_health;
 		if(this.current_health > 0) {
 			StartCoroutine(flash_coroutine());
 		}
