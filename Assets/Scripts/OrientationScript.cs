@@ -44,7 +44,7 @@ public class OrientationScript : MonoBehaviour {
 				transform.localScale = set_x(transform.localScale, 1);
 			}
 				else {
-					Debug.Log ("static hori");
+//					Debug.Log ("static hori");
 				}
 		} else {
 			// mouvement majoritairement vertical
@@ -56,7 +56,7 @@ public class OrientationScript : MonoBehaviour {
 				transform.localScale = set_x(transform.localScale, 1);
 			}
 				else {
-					Debug.Log ("static vert");
+//					Debug.Log ("static vert");
 				}
 		}
 	}

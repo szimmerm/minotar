@@ -78,8 +78,8 @@ public class PathfindingManager : MonoBehaviour, IReset {
 
 	public Vector3 get_next_move(Vector3 start) {
 		List<Node> path = graph.get_path_to_root (position_to_node(start));
-		render_path(path);
-		Debug.Log ("next move : "+node_to_position(path[0]));
+//		render_path(path);
+//		Debug.Log ("next move : "+node_to_position(path[0]));
 		return node_to_position(path[0]);
 	}
 
@@ -101,12 +101,12 @@ public class PathfindingManager : MonoBehaviour, IReset {
 
 	public Vector3 get_smooth_next_move(Vector3 object_position) {
 		List<Node> path = graph.get_path_to_root (position_to_node(object_position));
-		render_path(path);
-		print_path(path);
+//		render_path(path);
+//		print_path(path);
 		
 
 		if (Physics2D.Linecast(object_position, player.transform.position, 1 << LayerMask.NameToLayer ("Walls")).collider == null) {
-			Debug.Log ("no collision");
+//			Debug.Log ("no collision");
 			return player.transform.position;
 		}
 		
@@ -115,7 +115,7 @@ public class PathfindingManager : MonoBehaviour, IReset {
 		foreach(Node node in path) {
 			Vector2 current = node_to_position(node);
 			if (is_shortcut_valid(start, current)) {
-				Debug.Log ("next move"+current);
+//				Debug.Log ("next move"+current);
 				return current;
 			}
 		}
@@ -124,11 +124,15 @@ public class PathfindingManager : MonoBehaviour, IReset {
 	}
 
 	public void add_blocker(Vector3 position) {
-		Debug.Log ("blocker coordinates : "+position);
+//		Debug.Log ("blocker coordinates : "+position);
 		graph.add_blocking_node(position_to_node(position));
 	}
 	
 	public void on_reset() {
 		graph = new GridGraph(width, height);
+	}
+
+	public Vector3 get_random_tile() {
+		return node_to_position(graph.get_random_node ());
 	}
 }

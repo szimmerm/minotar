@@ -58,7 +58,7 @@ public class GridGraph {
 		foreach(Node node in blocking_nodes) {
 			res += " ("+node.pos_x+" ; "+node.pos_y+")";
 		}
-		Debug.Log (res);
+//		Debug.Log (res);
 
 		reset();
 		root.is_root = true;
@@ -85,11 +85,11 @@ public class GridGraph {
 			}
 		}
 
-		Debug.Log ("chemin valide");
+//		Debug.Log ("chemin valide");
 	}
 
 	public List<Node> get_path_to_root(Node start) {
-		Debug.Log (start);
+//		Debug.Log (start);
 
 		Node current = start;
 		List<Node> res = new List<Node>();
@@ -109,5 +109,17 @@ public class GridGraph {
 	public void add_blocking_node(Node node) {
 		blocking_nodes.Add (grid[node.pos_x, node.pos_y]);
 		Debug.LogError ("setting "+node.pos_x+" ; "+node.pos_y+" as infranchissable");
+	}
+
+	public Node get_random_node(){
+		Node choice;
+		do {
+			int x = Mathf.FloorToInt (Random.Range (0, width));
+			int y = Mathf.FloorToInt(Random.Range (0, height));
+//			Debug.Log ("noeud choisi : "+x+" ; "+y);
+			choice = grid[x, y];
+		} while (blocking_nodes.Contains(choice));
+
+		return choice;
 	}
 }
