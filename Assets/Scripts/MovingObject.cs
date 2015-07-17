@@ -27,7 +27,7 @@ public class MovingObject : MonoBehaviour {
 			}
 		}
 		if (this.feet == null) {
-			Debug.LogError("impossible de trouver la hitbox des pieds");
+//			Debug.LogError("impossible de trouver la hitbox des pieds");
 		}
 	}
 	

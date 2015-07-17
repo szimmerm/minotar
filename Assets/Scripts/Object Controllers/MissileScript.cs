@@ -17,7 +17,9 @@ public class MissileScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+		float max_velocity = GetComponent<MovingObject>().max_velocity;
+		float travel_time = (target - transform.position).magnitude / (6*max_velocity);
+		GetComponentInChildren<ProjectileShadow>().set_initial_impulse_from_time(travel_time);
 	}
 	
 	// Update is called once per frame
@@ -39,6 +41,7 @@ public class MissileScript : MonoBehaviour {
 	void on_target_arrival() {
 		values.direction = Vector3.zero;
 		values.should_update_direction = false;
+		Debug.Log ("knut");
 		Destroy(this.gameObject);
 	}
 
