@@ -13,7 +13,8 @@ public class ObstacleSpawner : MonoBehaviour {
 	private int max_size;	
 	private PathfindingManager pathfinder;
 
-//	private bool should_restart_pattern = true; //doit etre laisse commente, je comprends pas l'interraction entre invokerepeatink et les coroutines derriere tout ca
+	[SerializeField]
+	private bool trying_to_restart = false;
 
 	void Awake() {
 		pathfinder = GameObject.FindGameObjectWithTag("Pathfinder").GetComponent<PathfindingManager>();
@@ -78,16 +79,17 @@ public class ObstacleSpawner : MonoBehaviour {
 
 	private IEnumerator wait_then_reset_pattern(float timer) {
 		CancelInvoke("spawn_bloc");
+		trying_to_restart = true;
 		yield return new WaitForSeconds(timer);
-//		if (should_restart_pattern) {
+		if (trying_to_restart) {
 			disable_current_pattern();
 			initialize_pattern();
 			pathfinder.on_reset ();	
 			InvokeRepeating("spawn_bloc", spawn_delay, spawn_delay);
-//		} else {
-//			Debug.Log ("ESEL");
-//			should_restart_pattern = true;
-//		}
+			trying_to_restart = false;
+		} else {
+			Debug.Log ("reset aborted");
+		}
 	}
 
 	private void spawn_bloc() {
@@ -109,7 +111,7 @@ public class ObstacleSpawner : MonoBehaviour {
 
 	public void stop_spawning() {
 		CancelInvoke("spawn_bloc");
-//		should_restart_pattern = false;
+		trying_to_restart = false;
 	}
 
 	// Update is called once per frame
