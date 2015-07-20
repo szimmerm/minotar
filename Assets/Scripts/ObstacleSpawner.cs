@@ -5,6 +5,7 @@ public class ObstacleSpawner : MonoBehaviour {
 
 	public float spawn_delay;
 	public float start_time;
+	public float delay_between_patterns;
 	public Vector2 grid_offset;
 
 	private float cube_size = 41;
@@ -12,15 +13,17 @@ public class ObstacleSpawner : MonoBehaviour {
 	private int max_size;	
 	private PathfindingManager pathfinder;
 
+//	private bool should_restart_pattern = true; //doit etre laisse commente, je comprends pas l'interraction entre invokerepeatink et les coroutines derriere tout ca
+
 	void Awake() {
+		pathfinder = GameObject.FindGameObjectWithTag("Pathfinder").GetComponent<PathfindingManager>();
 		align_blocs();
 		disable_all_patterns();
-		initialize_pattern();
-		pathfinder = GameObject.FindGameObjectWithTag("Pathfinder").GetComponent<PathfindingManager>();
 	}	
 
 	// Use this for initialization
 	void Start () {
+		initialize_pattern();
 		InvokeRepeating("spawn_bloc", start_time, spawn_delay);	
 	}
 
@@ -31,7 +34,6 @@ public class ObstacleSpawner : MonoBehaviour {
 	}
 
 	private void disable_all_patterns() {
-		
 		foreach (Transform pattern_container in this.transform) {
 			pattern_container.gameObject.SetActive (true);
 			foreach(Transform bloc in pattern_container) {
@@ -74,11 +76,28 @@ public class ObstacleSpawner : MonoBehaviour {
 		return chosen_bloc;
 	}
 
+	private IEnumerator wait_then_reset_pattern(float timer) {
+		CancelInvoke("spawn_bloc");
+		yield return new WaitForSeconds(timer);
+//		if (should_restart_pattern) {
+			disable_current_pattern();
+			initialize_pattern();
+			pathfinder.on_reset ();	
+			InvokeRepeating("spawn_bloc", spawn_delay, spawn_delay);
+//		} else {
+//			Debug.Log ("ESEL");
+//			should_restart_pattern = true;
+//		}
+	}
+
 	private void spawn_bloc() {
 		if (max_size > 0) {
 			GameObject bloc = choose_bloc();
 			bloc.SetActive (true);
 			pathfinder.add_blocker(bloc.transform.position);
+		}
+		else {
+			StartCoroutine(wait_then_reset_pattern(delay_between_patterns));
 		}
 	}
 	
@@ -90,6 +109,7 @@ public class ObstacleSpawner : MonoBehaviour {
 
 	public void stop_spawning() {
 		CancelInvoke("spawn_bloc");
+//		should_restart_pattern = false;
 	}
 
 	// Update is called once per frame

@@ -7,11 +7,13 @@ public class MissileScript : MonoBehaviour {
 
 	public Vector3 target;
 	private ObjectValues values;
+	private GameObject player;
 
 	float last_distance;
 
 	void Awake() {
 		values = GetComponent<ObjectValues>();
+		player = GameObject.FindGameObjectWithTag ("player");
 		last_distance = 1000000;
 	}
 
@@ -39,9 +41,9 @@ public class MissileScript : MonoBehaviour {
 	}
 
 	void on_target_arrival() {
-		values.direction = Vector3.zero;
-		values.should_update_direction = false;
-		Debug.Log ("knut");
+		if ((transform.position - player.transform.position).sqrMagnitude < 30*30) {
+			player.GetComponent<HealthScript>().receive_damage ();
+		}
 		Destroy(this.gameObject);
 	}
 

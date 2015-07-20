@@ -19,11 +19,14 @@ public class PathfindingManager : MonoBehaviour, IReset {
 	void Awake() {
 		graph = new GridGraph(width, height);
 		player = GameObject.FindGameObjectWithTag("Player");
-		ResetScript.register_in_controller (this);
 		
 		// debug
 		line = gameObject.AddComponent<LineRenderer>();	
 //		display_debuging_positions(); // a utiliser que pour debugger
+	}
+
+	void Start() {
+		ResetScript.register_in_controller (this);
 	}
 	
 	// Update is called once per frame
@@ -129,7 +132,7 @@ public class PathfindingManager : MonoBehaviour, IReset {
 	}
 	
 	public void on_reset() {
-		graph = new GridGraph(width, height);
+		graph.on_reset();
 	}
 
 	public Vector3 get_random_tile() {

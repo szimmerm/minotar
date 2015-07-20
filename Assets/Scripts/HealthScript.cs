@@ -47,6 +47,12 @@ public class HealthScript : MonoBehaviour, IReset {
 		}
 	}
 
+	public void receive_damage() {
+		if (!this.invulnerable) {
+			take_damage();
+		}
+	}
+
 	private void take_damage() {
 		this.current_health--;
 		this.health_slider.value = this.current_health;

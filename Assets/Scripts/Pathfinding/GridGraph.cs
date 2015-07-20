@@ -23,7 +23,7 @@ public class GridGraph {
 		}
 	}
 
-	private void reset() {
+	private void reset_nodes() {
 		for(int i = 0; i < width; i++) {
 			for(int j = 0; j < height; j++){
 				grid[i, j].reset ();
@@ -60,7 +60,7 @@ public class GridGraph {
 		}
 //		Debug.Log (res);
 
-		reset();
+		reset_nodes();
 		root.is_root = true;
 		Queue<Node> stack = new Queue<Node>();
 		stack.Enqueue(root);
@@ -121,5 +121,9 @@ public class GridGraph {
 		} while (blocking_nodes.Contains(choice));
 
 		return choice;
+	}
+
+	public void on_reset(){
+		blocking_nodes = new HashSet<Node>();
 	}
 }
