@@ -28,12 +28,5 @@ public class ProjectileShadow : MonoBehaviour {
 	void FixedUpdate() {
 		speed -= new Vector3(0, gravity, 0) * Time.fixedDeltaTime;
 		transform.localPosition += speed * Time.fixedDeltaTime;
-		if (transform.localPosition.y <= 2) {
-			on_landing();
-		}
-	}
-
-	private void on_landing() {
-		Debug.LogError ("kaboooom !!!");
 	}
 }

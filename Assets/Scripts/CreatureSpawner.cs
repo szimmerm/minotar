@@ -11,9 +11,11 @@ public class CreatureSpawner : MonoBehaviour, IReset {
 	public float spawn_animation_duration;
 
 	private HashSet<SpawnControlledElement> active_creatures;
+	private HighScoreScript highscore;
 
 	private void Awake() {
 		active_creatures = new HashSet<SpawnControlledElement>();
+		highscore = GameObject.FindGameObjectWithTag("GameController").GetComponent<HighScoreScript>();
 	}
 
 	void Start() {
@@ -46,6 +48,7 @@ public class CreatureSpawner : MonoBehaviour, IReset {
 //		spawn_creature.transform.parent = this.transform.parent;
 		spawn_creature.GetComponent<SpawnControlledElement>().controller = this;
 		active_creatures.Add (spawn_creature.GetComponent<SpawnControlledElement>());
+		highscore.register_minotar (spawn_creature.transform);
 	}
 
 	private void register_creature(SpawnControlledElement creature) {

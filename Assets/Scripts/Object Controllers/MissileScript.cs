@@ -13,7 +13,7 @@ public class MissileScript : MonoBehaviour {
 
 	void Awake() {
 		values = GetComponent<ObjectValues>();
-		player = GameObject.FindGameObjectWithTag ("player");
+		player = GameObject.FindGameObjectWithTag ("Player");
 		last_distance = 1000000;
 	}
 
@@ -49,6 +49,9 @@ public class MissileScript : MonoBehaviour {
 
 	public void set_target(Vector3 target_position) {
 		target = target_position;
+		if (values == null) {
+			values = GetComponent<ObjectValues>();
+		}
 		values.direction = (target_position - transform.position);
 	}
 
