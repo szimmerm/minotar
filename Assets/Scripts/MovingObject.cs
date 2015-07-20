@@ -37,7 +37,7 @@ public class MovingObject : MonoBehaviour {
 		body.velocity = Vector3.ClampMagnitude (body.velocity, max_velocity);
 	}
 
-	private void stop_object() {
+	public void stop_object() {
 		body.velocity = Vector3.zero;
 	}
 

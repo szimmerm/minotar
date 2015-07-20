@@ -9,6 +9,8 @@ public class MissileScript : MonoBehaviour {
 	private ObjectValues values;
 	private GameObject player;
 
+	private bool active = true;
+
 	float last_distance;
 
 	void Awake() {
@@ -29,22 +31,30 @@ public class MissileScript : MonoBehaviour {
 	}
 
 	void FixedUpdate() {
-		float distance = (target - transform.position).sqrMagnitude;
-		if (distance < 10) {
-			on_target_arrival();
-		}
-		else if (last_distance < distance) {
-			Debug.LogError ("la distance augmente !!!");		
-		} else {
-			last_distance = distance;
+		if (active) {
+			float distance = (target - transform.position).sqrMagnitude;
+			if (distance < 10) {
+				on_target_arrival();
+			}
+			else if (last_distance < distance) {
+				Debug.LogError ("la distance augmente !!!");		
+			} else {
+				last_distance = distance;
+			}
 		}
 	}
 
 	void on_target_arrival() {
+		active = false;
+		values.direction = Vector2.zero;
+		GetComponentInChildren<Animator>().SetTrigger ("Explode");
+		GetComponentInChildren<ProjectileShadow>().enabled = false;
+	}
+
+	public void apply_explosion_damages() {
 		if ((transform.position - player.transform.position).sqrMagnitude < 30*30) {
 			player.GetComponent<HealthScript>().receive_damage ();
 		}
-		Destroy(this.gameObject);
 	}
 
 	public void set_target(Vector3 target_position) {
@@ -53,6 +63,10 @@ public class MissileScript : MonoBehaviour {
 			values = GetComponent<ObjectValues>();
 		}
 		values.direction = (target_position - transform.position);
+	}
+
+	public void make_me_die() {
+		Destroy(this.gameObject);
 	}
 
 }
