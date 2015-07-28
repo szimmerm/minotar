@@ -17,6 +17,8 @@ public class GamepadControlled : MonoBehaviour, IReset {
 
 	public float public_value;
 	public float max_public;
+
+	public AudioClip applause_sound;
 	
 	void Awake () {
 		internal_values = GetComponent<ObjectValues>();
@@ -64,9 +66,8 @@ public class GamepadControlled : MonoBehaviour, IReset {
 	}
 
 	private void call_taunt() {
-		Debug.Log ("Taunt GRRRRR");
-		Debug.Log ("public value : "+public_value);
 		transform.root.GetComponentInChildren<Animator>().SetTrigger ("callTaunt");
+		AudioSource.PlayClipAtPoint(applause_sound, transform.position);
 		public_value = 0;
 	}
 

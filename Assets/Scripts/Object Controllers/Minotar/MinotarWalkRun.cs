@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MinotarWalkRun : MonoBehaviour, IReset {
+public class MinotarWalkRun : MonoBehaviour {
 
 	public float run_speed;
 	public float run_time;
@@ -21,7 +21,7 @@ public class MinotarWalkRun : MonoBehaviour, IReset {
 	// Use this for initialization
 	void Start () {
 		StartCoroutine(walk_run_switcher());
-		ResetScript.register_in_controller (this);
+//		ResetScript.register_in_controller (this);
 	}
 	
 	// Update is called once per frame
@@ -30,6 +30,7 @@ public class MinotarWalkRun : MonoBehaviour, IReset {
 	}
 
 	private IEnumerator walk_run_switcher() {
+		Debug.Log ("start run walk");
 		while(!game_controller.is_game_over) {
 			float new_speed;
 			float new_timer;
@@ -41,16 +42,17 @@ public class MinotarWalkRun : MonoBehaviour, IReset {
 				new_timer = run_time;
 			}
 			move_controller.max_velocity = new_speed;
-			Debug.Log ("Changement de vitesse !");
 			run = !run;
 			yield return new WaitForSeconds(new_timer);
 			
 		}
 	}
 
-	
+/*	
 	public void on_reset() {
 		run = true;
 		StartCoroutine(walk_run_switcher());
+		Debug.Log ("Reset run walk");
 	}
+*/
 }

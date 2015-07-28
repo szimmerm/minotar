@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class GameControllerScript : MonoBehaviour {
+public class GameControllerScript : MonoBehaviour, IReset {
 
 	public bool is_game_over = false;
 	private HighScoreScript high_score;
@@ -19,7 +19,7 @@ public class GameControllerScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+		ResetScript.register_in_controller (this);
 	}
 
 	private void restart() {
@@ -52,5 +52,9 @@ public class GameControllerScript : MonoBehaviour {
 		is_game_over = true;
 		creature_spawner.stop_spawning();
 		obstacle_spawner.stop_spawning();
+	}
+
+	public void on_reset() {
+		is_game_over = false;
 	}
 }
