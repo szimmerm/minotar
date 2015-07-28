@@ -74,4 +74,12 @@ public class CreatureSpawner : MonoBehaviour, IReset {
 	public void stop_spawning() {
 		// CancelInvoke("call_spawn_creature");
 	}
+
+	public void send_game_over_message() {
+		Debug.Log ("game over man");
+		foreach(SpawnControlledElement creature in active_creatures) {
+			creature.GetComponent<MinotarAI>().wins();
+			Debug.Log ("game over");
+		}
+	}
 }

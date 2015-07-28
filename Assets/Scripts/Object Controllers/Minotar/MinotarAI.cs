@@ -76,4 +76,10 @@ public class MinotarAI : MonoBehaviour {
 		}
 	
 	}
+
+	public void wins() {
+		move_script.stop_object ();
+		move_script.able_to_move = false;
+		GetComponentInChildren<Animator>().SetTrigger ("playerDead");
+	}
 }

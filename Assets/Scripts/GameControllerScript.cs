@@ -51,6 +51,7 @@ public class GameControllerScript : MonoBehaviour, IReset {
 		high_score.pause_score ();
 		is_game_over = true;
 		creature_spawner.stop_spawning();
+		creature_spawner.send_game_over_message();
 		obstacle_spawner.stop_spawning();
 	}
 
