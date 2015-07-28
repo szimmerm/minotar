@@ -14,6 +14,9 @@ public class GamepadControlled : MonoBehaviour, IReset {
 	private MovingObject move_script;	
 	private bool can_dash = true;
 	private ParticleSystem dash_particles;
+
+	public float public_value;
+	public float max_public;
 	
 	void Awake () {
 		internal_values = GetComponent<ObjectValues>();
@@ -55,9 +58,23 @@ public class GamepadControlled : MonoBehaviour, IReset {
 			move_script.call_dash ();
 			call_dash_reset();
 		}
+		if (Input.GetButtonDown ("Taunt") && (max_public - public_value < 10)) {
+			call_taunt();
+		}
+	}
+
+	private void call_taunt() {
+		Debug.Log ("Taunt GRRRRR");
+		Debug.Log ("public value : "+public_value);
+		transform.root.GetComponentInChildren<Animator>().SetTrigger ("callTaunt");
+		public_value = 0;
 	}
 
 	public void on_reset() {
 		can_dash = true;
+	}
+
+	public void add_public_value(float value) {
+		public_value = Mathf.Min (max_public, public_value + value);
 	}
 }

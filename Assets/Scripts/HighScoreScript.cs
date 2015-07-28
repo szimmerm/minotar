@@ -15,22 +15,33 @@ public class HighScoreScript : MonoBehaviour {
 	public int score_factor = 100;
 
 	private Transform player;
+	private GamepadControlled player_controller;
 	private Transform minotar = null;
 
+	public float score_distance;
 
 	// Use this for initialization
 	void Start () {
 		current_score = 0;
 		player = GameObject.FindGameObjectWithTag("Player").transform;
+		player_controller = player.GetComponent<GamepadControlled>();
 	}
 	
 	private float compute_score(float dt, float distance) {
-		return (dt * score_factor) / distance;
+		//return (dt * score_factor) / distance;
+		return (distance < score_distance) ? (dt*score_factor) : 0;
+	}
+
+	private float compute_public(float dt, float distance) {
+		return (distance < score_distance) ? 100*dt : 0;
 	}
 
 	private void update_score() {
 		if (minotar != null) {
-			current_score += compute_score(Time.deltaTime, ((Vector2)player.position - (Vector2)minotar.position).magnitude);
+			float dt = Time.deltaTime;
+			float distance = ((Vector2)player.position - (Vector2)minotar.position).magnitude;
+			current_score += compute_score(dt, distance);
+			player_controller.add_public_value(compute_public(dt, distance));
 			score_HUD.text = ""+((int)Mathf.Floor (current_score));
 		}
 	}

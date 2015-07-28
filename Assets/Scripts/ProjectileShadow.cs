@@ -3,8 +3,8 @@ using System.Collections;
 
 public class ProjectileShadow : MonoBehaviour {
 
-	private float gravity = 700;
-	private Vector3 speed;
+	public float gravity = 700;
+	public Vector3 speed;
 
 	void Awake() {
 		speed = new Vector3(0, 0, 0);

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MinotarWalkRun : MonoBehaviour {
+public class MinotarWalkRun : MonoBehaviour, IReset {
 
 	public float run_speed;
 	public float run_time;
@@ -21,6 +21,7 @@ public class MinotarWalkRun : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		StartCoroutine(walk_run_switcher());
+		ResetScript.register_in_controller (this);
 	}
 	
 	// Update is called once per frame
@@ -45,5 +46,11 @@ public class MinotarWalkRun : MonoBehaviour {
 			yield return new WaitForSeconds(new_timer);
 			
 		}
+	}
+
+	
+	public void on_reset() {
+		run = true;
+		StartCoroutine(walk_run_switcher());
 	}
 }

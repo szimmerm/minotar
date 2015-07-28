@@ -5,6 +5,7 @@ public class ItemThrower : MonoBehaviour {
 
 	private PathfindingManager pathfinder;
 	public Transform blueprint;
+	public float throw_timer;
 
 	void Awake() {
 		pathfinder = GameObject.FindGameObjectWithTag ("Pathfinder").GetComponent<PathfindingManager>();
@@ -12,7 +13,7 @@ public class ItemThrower : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		InvokeRepeating("throw_item", 2f, 1f);
+		InvokeRepeating("throw_item", 2f, throw_timer);
 	}
 
 	private Vector3 choose_start_position() {
