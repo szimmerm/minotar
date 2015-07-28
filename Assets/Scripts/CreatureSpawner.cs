@@ -24,7 +24,7 @@ public class CreatureSpawner : MonoBehaviour, IReset {
 	}
 
 	private Vector3 choose_spawn_position() {
-		Vector3 spawn_position = spawn_positions[(int)Mathf.Floor (Random.Range(0, spawn_positions.Length))].position;
+		Vector3 spawn_position = spawn_positions[Mathf.FloorToInt (Random.Range(0, spawn_positions.Length))].position;
 		return new Vector3(spawn_position.x, spawn_position.y, 2);
 	}
 
@@ -76,10 +76,8 @@ public class CreatureSpawner : MonoBehaviour, IReset {
 	}
 
 	public void send_game_over_message() {
-		Debug.Log ("game over man");
 		foreach(SpawnControlledElement creature in active_creatures) {
 			creature.GetComponent<MinotarAI>().wins();
-			Debug.Log ("game over");
 		}
 	}
 }

@@ -88,7 +88,7 @@ public class ObstacleSpawner : MonoBehaviour {
 			InvokeRepeating("spawn_bloc", spawn_delay, spawn_delay);
 			trying_to_restart = false;
 		} else {
-			Debug.Log ("reset aborted");
+//			Debug.Log ("reset aborted");
 		}
 	}
 
