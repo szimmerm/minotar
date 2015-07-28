@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class GameControllerScript : MonoBehaviour {
 
-	private bool is_game_over = false;
+	public bool is_game_over = false;
 	private HighScoreScript high_score;
 	private HashSet<IReset> active_objects;
 	private CreatureSpawner creature_spawner;
