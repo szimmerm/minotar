@@ -20,11 +20,20 @@ public class HighScoreScript : MonoBehaviour {
 
 	public float score_distance;
 
+	public float taunt_score_value;
+	public float crowd_volume_cap;
+
+	private AudioSource crowd_audio;
+	private bool low_crowd = true;
+	public AudioClip quiet_crowd;
+	public AudioClip agitated_crowd;
+
 	// Use this for initialization
 	void Start () {
 		current_score = 0;
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		player_controller = player.GetComponent<GamepadControlled>();
+		crowd_audio = GetComponentInChildren<AudioSource>();
 	}
 	
 	private float compute_score(float dt, float distance) {
@@ -68,10 +77,29 @@ public class HighScoreScript : MonoBehaviour {
 		minotar = candidate;
 	}
 
+	public void score_taunt() {
+		current_score += taunt_score_value;
+	}
+
 	// Update is called once per frame
 	void Update () {
 		if(!score_paused) {
 			update_score();
+		}
+	}
+
+	public void receive_crowd_value(float crowd_value) {
+		if (!score_paused) {
+			if ((crowd_value - crowd_volume_cap) < -0.01 && !low_crowd)	{
+				low_crowd = true;
+				crowd_audio.clip = quiet_crowd;
+				crowd_audio.Play ();
+			}
+			if (crowd_value - crowd_volume_cap >= -0.01 && low_crowd) {
+				low_crowd = false;
+				crowd_audio.clip = agitated_crowd;
+				crowd_audio.Play ();
+			}
 		}
 	}
 }

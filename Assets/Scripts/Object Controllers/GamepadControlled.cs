@@ -14,6 +14,7 @@ public class GamepadControlled : MonoBehaviour, IReset {
 	private MovingObject move_script;	
 	private bool can_dash = true;
 	private ParticleSystem dash_particles;
+	private HighScoreScript score_controller;
 
 	public float public_value;
 	public float max_public;
@@ -24,6 +25,7 @@ public class GamepadControlled : MonoBehaviour, IReset {
 		internal_values = GetComponent<ObjectValues>();
 		move_script = GetComponent<MovingObject>();
 		dash_particles = GetComponentInChildren<ParticleSystem>();
+		score_controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<HighScoreScript>();
 	}
 	
 	// Use this for initialization
@@ -62,7 +64,10 @@ public class GamepadControlled : MonoBehaviour, IReset {
 		}
 		if (Input.GetButtonDown ("Taunt") && (max_public - public_value < 10)) {
 			call_taunt();
+			score_controller.score_taunt();
 		}
+
+		score_controller.receive_crowd_value (public_value);
 	}
 
 	private void call_taunt() {
