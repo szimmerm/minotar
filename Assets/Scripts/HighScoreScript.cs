@@ -4,7 +4,7 @@ using System.Collections;
 
 public class HighScoreScript : MonoBehaviour {
 
-	public int startTime;
+//	public int startTime;
 	public float current_score;
 	public Text score_HUD;
 
@@ -27,22 +27,20 @@ public class HighScoreScript : MonoBehaviour {
 		current_score = 0;
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		player_controller = player.GetComponent<GamepadControlled>();
-		crowd_audio = GetComponentInChildren<AudioSource>();
 	}
 
 	private void update_score() {
 		if (minotar != null) {
-			float dt = Time.deltaTime;
-			float distance = ((Vector2)player.position - (Vector2)minotar.position).magnitude;
-			current_score += compute_score(dt, distance);
-//			player_controller.add_public_value(compute_public(dt, distance));
-			score_HUD.text = ""+(Mathf.FloorToInt (current_score));
+			if (!score_delayed && ((Vector2)player.position - (Vector2)minotar.position).magnitude < score_distance) {
+				StartCoroutine(score_delay());
+			}
 		}
 	}
 
 	private IEnumerator score_delay() {
 		score_delayed = true;
 		current_score += score_factor;
+		score_HUD.text = ""+(Mathf.FloorToInt (current_score));
 		yield return new WaitForSeconds(delay_time);
 		score_delayed = false;
 	}
