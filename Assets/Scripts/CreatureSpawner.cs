@@ -49,6 +49,7 @@ public class CreatureSpawner : MonoBehaviour, IReset {
 		spawn_creature.GetComponent<SpawnControlledElement>().controller = this;
 		active_creatures.Add (spawn_creature.GetComponent<SpawnControlledElement>());
 		highscore.register_minotar (spawn_creature.transform);
+		GameObject.FindGameObjectWithTag ("Player").GetComponent<CrowdController>().register_minotar(spawn_creature.transform);
 	}
 
 	private void register_creature(SpawnControlledElement creature) {

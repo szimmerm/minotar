@@ -12,21 +12,15 @@ public class HighScoreScript : MonoBehaviour {
 	public Text highscore_HUD;
 
 	public bool score_paused = false;
+	public bool score_delayed = false;
 	public int score_factor = 100;
+	public float delay_time;
 
 	private Transform player;
 	private GamepadControlled player_controller;
 	private Transform minotar = null;
 
 	public float score_distance;
-
-	public float taunt_score_value;
-	public float crowd_volume_cap;
-
-	private AudioSource crowd_audio;
-	private bool low_crowd = true;
-	public AudioClip quiet_crowd;
-	public AudioClip agitated_crowd;
 
 	// Use this for initialization
 	void Start () {
@@ -35,24 +29,22 @@ public class HighScoreScript : MonoBehaviour {
 		player_controller = player.GetComponent<GamepadControlled>();
 		crowd_audio = GetComponentInChildren<AudioSource>();
 	}
-	
-	private float compute_score(float dt, float distance) {
-		//return (dt * score_factor) / distance;
-		return (distance < score_distance) ? (dt*score_factor) : 0;
-	}
-
-	private float compute_public(float dt, float distance) {
-		return (distance < score_distance) ? 100*dt : 0;
-	}
 
 	private void update_score() {
 		if (minotar != null) {
 			float dt = Time.deltaTime;
 			float distance = ((Vector2)player.position - (Vector2)minotar.position).magnitude;
 			current_score += compute_score(dt, distance);
-			player_controller.add_public_value(compute_public(dt, distance));
-			score_HUD.text = ""+((int)Mathf.Floor (current_score));
+//			player_controller.add_public_value(compute_public(dt, distance));
+			score_HUD.text = ""+(Mathf.FloorToInt (current_score));
 		}
+	}
+
+	private IEnumerator score_delay() {
+		score_delayed = true;
+		current_score += score_factor;
+		yield return new WaitForSeconds(delay_time);
+		score_delayed = false;
 	}
 
 	public void pause_score() {
@@ -77,29 +69,14 @@ public class HighScoreScript : MonoBehaviour {
 		minotar = candidate;
 	}
 
-	public void score_taunt() {
-		current_score += taunt_score_value;
+	public void add_score(float score_value) {
+		current_score += score_value;
 	}
 
 	// Update is called once per frame
 	void Update () {
 		if(!score_paused) {
 			update_score();
-		}
-	}
-
-	public void receive_crowd_value(float crowd_value) {
-		if (!score_paused) {
-			if ((crowd_value - crowd_volume_cap) < -0.01 && !low_crowd)	{
-				low_crowd = true;
-				crowd_audio.clip = quiet_crowd;
-				crowd_audio.Play ();
-			}
-			if (crowd_value - crowd_volume_cap >= -0.01 && low_crowd) {
-				low_crowd = false;
-				crowd_audio.clip = agitated_crowd;
-				crowd_audio.Play ();
-			}
 		}
 	}
 }

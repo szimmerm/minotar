@@ -25,7 +25,7 @@ public class GamepadControlled : MonoBehaviour, IReset {
 		internal_values = GetComponent<ObjectValues>();
 		move_script = GetComponent<MovingObject>();
 		dash_particles = GetComponentInChildren<ParticleSystem>();
-		score_controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<HighScoreScript>();
+//		score_controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<HighScoreScript>();
 	}
 	
 	// Use this for initialization
@@ -62,25 +62,9 @@ public class GamepadControlled : MonoBehaviour, IReset {
 			move_script.call_dash ();
 			call_dash_reset();
 		}
-		if (Input.GetButtonDown ("Taunt") && (max_public - public_value < 10)) {
-			call_taunt();
-			score_controller.score_taunt();
-		}
-
-		score_controller.receive_crowd_value (public_value);
-	}
-
-	private void call_taunt() {
-		transform.root.GetComponentInChildren<Animator>().SetTrigger ("callTaunt");
-		AudioSource.PlayClipAtPoint(applause_sound, transform.position);
-		public_value = 0;
 	}
 
 	public void on_reset() {
 		can_dash = true;
-	}
-
-	public void add_public_value(float value) {
-		public_value = Mathf.Min (max_public, public_value + value);
 	}
 }
