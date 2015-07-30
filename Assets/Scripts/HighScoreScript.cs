@@ -15,6 +15,7 @@ public class HighScoreScript : MonoBehaviour {
 	public bool score_delayed = false;
 	public int score_factor = 100;
 	public float delay_time;
+	public Transform score_sprite;
 
 	private Transform player;
 	private GamepadControlled player_controller;
@@ -41,6 +42,10 @@ public class HighScoreScript : MonoBehaviour {
 		score_delayed = true;
 		current_score += score_factor;
 		score_HUD.text = ""+(Mathf.FloorToInt (current_score));
+		if (score_sprite != null) {
+			Transform score_item = (Transform)Instantiate(score_sprite, player.position + new Vector3(0, 30, 0), Quaternion.identity);
+			score_item.GetComponent<TextMesh>().text = score_factor.ToString ();
+		}
 		yield return new WaitForSeconds(delay_time);
 		score_delayed = false;
 	}
@@ -69,6 +74,7 @@ public class HighScoreScript : MonoBehaviour {
 
 	public void add_score(float score_value) {
 		current_score += score_value;
+		score_HUD.text = ""+(Mathf.FloorToInt (current_score));
 	}
 
 	// Update is called once per frame
