@@ -27,6 +27,8 @@ public class ProjectileShadow : MonoBehaviour {
 
 	void FixedUpdate() {
 		speed -= new Vector3(0, gravity, 0) * Time.fixedDeltaTime;
-		transform.localPosition += speed * Time.fixedDeltaTime;
+//		float newY = speed.y * Time.fixedDeltaTime;
+//		transform.localPosition += new Vector3(0, newY * Time.fixedDeltaTime, 0);
+		transform.localPosition += speed*Time.fixedDeltaTime;
 	}
-}
+} 

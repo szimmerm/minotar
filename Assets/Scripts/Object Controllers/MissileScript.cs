@@ -9,7 +9,7 @@ public class MissileScript : MonoBehaviour {
 	private ObjectValues values;
 	private GameObject player;
 
-	private bool active = true;
+	protected bool active = true;
 
 	float last_distance;
 
@@ -44,7 +44,7 @@ public class MissileScript : MonoBehaviour {
 		}
 	}
 
-	void on_target_arrival() {
+	protected virtual void on_target_arrival() {
 		active = false;
 		values.direction = Vector2.zero;
 		GetComponentInChildren<Animator>().SetTrigger ("Explode");
@@ -58,6 +58,7 @@ public class MissileScript : MonoBehaviour {
 	}
 
 	public void set_target(Vector3 target_position) {
+		Debug.Log ("target : "+target_position);
 		target = target_position;
 		if (values == null) {
 			values = GetComponent<ObjectValues>();

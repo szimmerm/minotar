@@ -103,4 +103,9 @@ public class HealthScript : MonoBehaviour, IReset {
 		this.sprite_renderer.enabled = true;
 	}
 
+	public void add_health(int value) {
+		this.current_health = (current_health + value) < 5 ? (current_health + value) : 5;
+		this.health_slider.value = this.current_health;
+	}
+
 }

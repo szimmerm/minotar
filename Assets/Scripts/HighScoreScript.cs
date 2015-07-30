@@ -18,7 +18,7 @@ public class HighScoreScript : MonoBehaviour {
 	public Transform score_sprite;
 
 	private Transform player;
-	private GamepadControlled player_controller;
+//	private GamepadControlled player_controller;
 	private Transform minotar = null;
 
 	public float score_distance;
@@ -27,7 +27,7 @@ public class HighScoreScript : MonoBehaviour {
 	void Start () {
 		current_score = 0;
 		player = GameObject.FindGameObjectWithTag("Player").transform;
-		player_controller = player.GetComponent<GamepadControlled>();
+//		player_controller = player.GetComponent<GamepadControlled>();
 	}
 
 	private void update_score() {

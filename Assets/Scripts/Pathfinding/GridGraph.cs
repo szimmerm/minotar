@@ -90,7 +90,10 @@ public class GridGraph {
 
 	public List<Node> get_path_to_root(Node start) {
 //		Debug.Log (start);
-
+		if (start == null) {
+			return new List<Node>();
+		}
+		
 		Node current = start;
 		List<Node> res = new List<Node>();
 		while(!current.is_root) {
