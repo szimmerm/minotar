@@ -19,6 +19,9 @@ public class CrowdController : MonoBehaviour, IReset {
 	public AudioClip high_crowd_sound;
 	public AudioClip applause_sound;
 
+	public bool crowd_active = true;
+	private GameControllerScript game_controller;
+
 	void Awake() {
 		crowd_value = 0;
 	}
@@ -38,18 +41,25 @@ public class CrowdController : MonoBehaviour, IReset {
 		}
 		sound_source.clip = low_crowd_sound;
 		sound_source.Play ();
+
+		game_controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameControllerScript>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		update_crowd_value();
-		if (Input.GetButtonDown ("Taunt") && (crowd_value >= taunt_cap)) {
-			call_taunt();
-			high_score.add_score(taunt_score_value);
-		}
-
-		if ((low_crowd && crowd_value > taunt_cap) || (!low_crowd && crowd_value < taunt_cap)) {
-			switch_sound();
+		if (!game_controller.is_game_over) {
+			if (crowd_active) {
+				update_crowd_value();
+			}
+	
+			if (Input.GetButtonDown ("Taunt") && (crowd_value >= taunt_cap)) {
+				call_taunt();
+				high_score.add_score(taunt_score_value);
+			}
+	
+			if ((low_crowd && crowd_value > taunt_cap) || (!low_crowd && crowd_value < taunt_cap)) {
+				switch_sound();
+			}
 		}
 	}
 
@@ -58,6 +68,7 @@ public class CrowdController : MonoBehaviour, IReset {
 		sound_source.clip = low_crowd_sound;
 		sound_source.Play ();
 		low_crowd = true;
+		crowd_active = true;
 	}
 
 	private void update_crowd_value() {

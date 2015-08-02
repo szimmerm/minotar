@@ -24,7 +24,6 @@ public class ItemThrower : MonoBehaviour {
 
 	private Transform choose_blueprint() {
 		int index = Mathf.FloorToInt(Random.Range (0, blueprints.Length));
-		Debug.Log ("valeur choisie : "+index);
 		return blueprints[index];
 	}
 

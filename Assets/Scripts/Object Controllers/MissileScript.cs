@@ -3,11 +3,11 @@ using System.Collections;
 
 [RequireComponent (typeof(MovingObject))]
 
-public class MissileScript : MonoBehaviour {
+public class MissileScript : MonoBehaviour, IReset {
 
 	public Vector3 target;
 	private ObjectValues values;
-	private GameObject player;
+	protected GameObject player;
 
 	protected bool active = true;
 
@@ -24,6 +24,7 @@ public class MissileScript : MonoBehaviour {
 		float max_velocity = GetComponent<MovingObject>().max_velocity;
 		float travel_time = (target - transform.position).magnitude / (6*max_velocity);
 		GetComponentInChildren<ProjectileShadow>().set_initial_impulse_from_time(travel_time);
+		ResetScript.register_in_controller (this);
 	}
 	
 	// Update is called once per frame
@@ -51,12 +52,6 @@ public class MissileScript : MonoBehaviour {
 		GetComponentInChildren<ProjectileShadow>().enabled = false;
 	}
 
-	public void apply_explosion_damages() {
-		if ((transform.position - player.transform.position).sqrMagnitude < 30*30) {
-			player.GetComponent<HealthScript>().receive_damage ();
-		}
-	}
-
 	public void set_target(Vector3 target_position) {
 		Debug.Log ("target : "+target_position);
 		target = target_position;
@@ -66,8 +61,17 @@ public class MissileScript : MonoBehaviour {
 		values.direction = (target_position - transform.position);
 	}
 
-	public void make_me_die() {
+	public void on_reset() {
 		Destroy(this.gameObject);
 	}
 
+	protected void stop_object() {
+		// stop movement
+		GetComponent<MovingObject>().stop_object();
+		GetComponentInChildren<ObjectValues>().direction = Vector2.zero;
+		ProjectileShadow shadowScript = GetComponentInChildren<ProjectileShadow>();
+		shadowScript.enabled = false;
+		shadowScript.transform.localPosition = Vector3.zero;
+		active = false;
+	}
 }
