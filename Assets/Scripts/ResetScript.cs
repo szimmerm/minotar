@@ -21,4 +21,10 @@ public class ResetScript : MonoBehaviour, IReset {
 		GameControllerScript main_controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameControllerScript>();
 		main_controller.register_object (reset_script);
 	}
+
+	
+	public static void unregister_in_controller(IReset reset_script) {
+		GameControllerScript main_controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameControllerScript>();
+		main_controller.register_object (reset_script);
+	}
 }

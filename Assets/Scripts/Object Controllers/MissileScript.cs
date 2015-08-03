@@ -53,7 +53,6 @@ public class MissileScript : MonoBehaviour, IReset {
 	}
 
 	public void set_target(Vector3 target_position) {
-		Debug.Log ("target : "+target_position);
 		target = target_position;
 		if (values == null) {
 			values = GetComponent<ObjectValues>();
@@ -62,7 +61,11 @@ public class MissileScript : MonoBehaviour, IReset {
 	}
 
 	public void on_reset() {
-		Destroy(this.gameObject);
+		//Destroy(this.gameObject);
+	}
+
+	public void OnDestroy() {
+		ResetScript.unregister_in_controller (this);
 	}
 
 	protected void stop_object() {

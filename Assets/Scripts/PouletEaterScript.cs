@@ -14,6 +14,6 @@ public class PouletEaterScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		player_health = GetComponent<HealthScript>();
+		player_health = GetComponentInChildren<HealthScript>();
 	}
 }

@@ -20,10 +20,10 @@ public class HealthScript : MonoBehaviour, IReset {
 	private ParticleSystem dash_particles;
 
 	void Awake() {
-		this.sprite_renderer = GetComponentInChildren<SpriteRenderer>();
+		this.sprite_renderer = transform.root.GetComponentInChildren<SpriteRenderer>();
 		this.game_controller = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameControllerScript>();
-		this.move_controller = GetComponentInChildren<MovingObject>();
-		this.dash_particles = GetComponentInChildren<ParticleSystem>();
+		this.move_controller = transform.root.GetComponentInChildren<MovingObject>();
+		this.dash_particles = transform.root.GetComponentInChildren<ParticleSystem>();
 		init_values();
 	}
 
@@ -42,6 +42,7 @@ public class HealthScript : MonoBehaviour, IReset {
 	}
 
 	public void OnTriggerStay2D(Collider2D collision_data) {
+		Debug.Log ("health collision");
 		if(!this.invulnerable && collision_data.tag == "Minotar") {
 			take_damage();
 		}

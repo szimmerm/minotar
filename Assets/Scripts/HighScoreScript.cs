@@ -17,24 +17,36 @@ public class HighScoreScript : MonoBehaviour {
 	public float delay_time;
 	public Transform score_sprite;
 
-	private Transform player;
+
+	private MinotarPerception perception;
+	private Transform player; /*
 //	private GamepadControlled player_controller;
 	private Transform minotar = null;
 
 	public float score_distance;
+*/
 
 	// Use this for initialization
 	void Start () {
 		current_score = 0;
 		player = GameObject.FindGameObjectWithTag("Player").transform;
+		perception = player.GetComponentInChildren<MinotarPerception>();
 //		player_controller = player.GetComponent<GamepadControlled>();
 	}
 
+/*
 	private void update_score() {
 		if (minotar != null) {
 			if (!score_delayed && ((Vector2)player.position - (Vector2)minotar.position).magnitude < score_distance) {
 				StartCoroutine(score_delay());
 			}
+		}
+	}
+*/
+
+	private void update_score() {
+		if (!score_delayed && perception.detected) {
+			StartCoroutine(score_delay());
 		}
 	}
 
@@ -65,12 +77,14 @@ public class HighScoreScript : MonoBehaviour {
 		update_highscore();
 		current_score = 0;
 		score_paused = false;
-		minotar = null;
+//		minotar = null;
 	}
 
+/*
 	public void register_minotar(Transform candidate) {
 		minotar = candidate;
 	}
+*/
 
 	public void add_score(float score_value) {
 		current_score += score_value;

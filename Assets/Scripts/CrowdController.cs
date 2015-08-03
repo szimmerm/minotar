@@ -8,13 +8,13 @@ public class CrowdController : MonoBehaviour, IReset {
 	public float taunt_cap;
 	public float max_crowd_value;
 	public float taunt_score_value;
-
-	[SerializeField] private float crowd_distance;
-	private Transform minotar = null;
 	private HighScoreScript high_score;
-	private AudioSource sound_source;
 	
 	private bool low_crowd = true;
+
+	private MinotarPerception perception;
+
+	private AudioSource sound_source;
 	public AudioClip low_crowd_sound;
 	public AudioClip high_crowd_sound;
 	public AudioClip applause_sound;
@@ -30,7 +30,6 @@ public class CrowdController : MonoBehaviour, IReset {
 	void Start() {
 		ResetScript.register_in_controller (this);
 		high_score = GameObject.FindGameObjectWithTag("GameController").GetComponent<HighScoreScript>();
-		crowd_distance = high_score.score_distance;
 		foreach(AudioSource candidate in GetComponentsInChildren<AudioSource>()) {
 			if (candidate.name == "CrowdSound") {
 				sound_source = candidate;
@@ -43,6 +42,7 @@ public class CrowdController : MonoBehaviour, IReset {
 		sound_source.Play ();
 
 		game_controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameControllerScript>();
+		perception = GetComponentInChildren<MinotarPerception>();
 	}
 	
 	// Update is called once per frame
@@ -72,21 +72,14 @@ public class CrowdController : MonoBehaviour, IReset {
 	}
 
 	private void update_crowd_value() {
-		if (minotar != null) {
-			float sqr_distance = ((Vector2) transform.position - (Vector2) minotar.position).magnitude;
-			float new_value = sqr_distance > crowd_distance ? Time.deltaTime  : 0;
-			crowd_value = Mathf.Min (max_crowd_value, crowd_value + new_value);
-		}
+		float new_value = perception.detected ? Time.deltaTime  : 0;
+		crowd_value = Mathf.Min (max_crowd_value, crowd_value + new_value);
 	}
 	
 	private void call_taunt() {
 		transform.root.GetComponentInChildren<Animator>().SetTrigger ("callTaunt");
 		AudioSource.PlayClipAtPoint(applause_sound, transform.position);
 		crowd_value = 0;
-	}
-
-	public void register_minotar(Transform minotar_candidate) {
-		minotar = minotar_candidate;
 	}
 
 	private void switch_sound() {
