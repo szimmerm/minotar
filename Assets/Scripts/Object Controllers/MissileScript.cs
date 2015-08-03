@@ -60,8 +60,8 @@ public class MissileScript : MonoBehaviour, IReset {
 		values.direction = (target_position - transform.position);
 	}
 
-	public void on_reset() {
-		//Destroy(this.gameObject);
+	public virtual void on_reset() {
+//		Destroy(this.gameObject);
 	}
 
 	public void OnDestroy() {

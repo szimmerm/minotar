@@ -24,7 +24,9 @@ public class GameControllerScript : MonoBehaviour, IReset {
 
 	private void restart() {
 		foreach (IReset component in active_objects) {
-			component.on_reset();
+			if (component != null) {
+				component.on_reset();
+			}
 		}
 		high_score.restart ();
 		obstacle_spawner.restart();

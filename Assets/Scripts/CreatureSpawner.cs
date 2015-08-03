@@ -11,11 +11,11 @@ public class CreatureSpawner : MonoBehaviour, IReset {
 	public float spawn_animation_duration;
 
 	private HashSet<SpawnControlledElement> active_creatures;
-	private HighScoreScript highscore;
+//	private HighScoreScript highscore;
 
 	private void Awake() {
 		active_creatures = new HashSet<SpawnControlledElement>();
-		highscore = GameObject.FindGameObjectWithTag("GameController").GetComponent<HighScoreScript>();
+//		highscore = GameObject.FindGameObjectWithTag("GameController").GetComponent<HighScoreScript>();
 	}
 
 	void Start() {
