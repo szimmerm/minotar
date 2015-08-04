@@ -34,6 +34,4 @@ public class MovementScript : MonoBehaviour {
 			body.velocity = Vector3.ClampMagnitude (body.velocity, max_velocity);		
 		}
 	}
-
-
 }

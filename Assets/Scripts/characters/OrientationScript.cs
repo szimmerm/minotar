@@ -29,11 +29,7 @@ public class OrientationScript : MonoBehaviour {
 
 	private void set_orientation() {
 		Vector2 direction = move.direction;
-/*
-		if (Mathf.Abs (Mathf.Abs (direction.x) - Mathf.Abs (direction.y)) < 0.1) {
-			return;
-		}
-*/
+
 		if (Mathf.Abs (direction.x) > Mathf.Abs (direction.y) || (direction.y * direction.y < 0.8)) {
 			// mouvement majoritairement horizontal
 			if (direction.x > 0) {

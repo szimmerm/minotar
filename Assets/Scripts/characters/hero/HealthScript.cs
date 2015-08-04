@@ -15,14 +15,16 @@ public class HealthScript : MonoBehaviour {
 
 	private SpriteRenderer sprite_renderer;
 	private GameControllerScript game_controller;
-	private MovingObject move_controller; // a changer aussi, pas tres propre comme architecture
+
+	private MovementScript move;
+
 	private bool invulnerable = false;
 	private ParticleSystem dash_particles;
 
 	void Awake() {
 		this.sprite_renderer = transform.root.GetComponentInChildren<SpriteRenderer>();
 		this.game_controller = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameControllerScript>();
-		this.move_controller = transform.root.GetComponentInChildren<MovingObject>();
+		move = transform.root.GetComponentInChildren<MovementScript>();
 		this.dash_particles = transform.root.GetComponentInChildren<ParticleSystem>();
 		init_values();
 	}
@@ -80,7 +82,9 @@ public class HealthScript : MonoBehaviour {
 
 	void on_death() {
 		game_controller.game_over();
-		move_controller.able_to_move = false;
+		move.stop ();
+		move.should_update_speed = false;
+		move.stop ();
 		dash_particles.Stop ();
 		dash_particles.Clear ();
 		
@@ -93,7 +97,7 @@ public class HealthScript : MonoBehaviour {
 
 	public void on_reset() {
 		init_values();
-		move_controller.able_to_move = true;
+		move.should_update_speed = true;
 		invulnerable = false;
 		dash_particles.Play ();
 		sprite_renderer.enabled = true;
