@@ -7,9 +7,10 @@ using System.Collections;
 // haut = 3
 // bas = 4
 
+[RequireComponent (typeof(MovementScript))]
 public class OrientationScript : MonoBehaviour {
 
-	private ObjectValues internal_values;
+	private MovementScript move;
 	private Animator character_animator;
 	private Rigidbody2D body;
 
@@ -17,7 +18,7 @@ public class OrientationScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		internal_values = GetComponent<ObjectValues>();
+		move = GetComponent<MovementScript>();
 		character_animator = GetComponentInChildren<Animator>();
 		body = GetComponent<Rigidbody2D>();
 	}
@@ -27,13 +28,12 @@ public class OrientationScript : MonoBehaviour {
 	}
 
 	private void set_orientation() {
-		Vector2 direction = internal_values.direction;
+		Vector2 direction = move.direction;
 /*
 		if (Mathf.Abs (Mathf.Abs (direction.x) - Mathf.Abs (direction.y)) < 0.1) {
 			return;
 		}
 */
-
 		if (Mathf.Abs (direction.x) > Mathf.Abs (direction.y) || (direction.y * direction.y < 0.8)) {
 			// mouvement majoritairement horizontal
 			if (direction.x > 0) {
@@ -42,10 +42,7 @@ public class OrientationScript : MonoBehaviour {
 			} else if (direction.x < 0) {
 				character_animator.SetInteger ("direction", 2);
 				transform.localScale = set_x(transform.localScale, 1);
-			}
-				else {
-//					Debug.Log ("static hori");
-				}
+			} 
 		} else {
 			// mouvement majoritairement vertical
 			if (direction.y > 0) {
@@ -55,9 +52,6 @@ public class OrientationScript : MonoBehaviour {
 				character_animator.SetInteger ("direction", 4);
 				transform.localScale = set_x(transform.localScale, 1);
 			}
-				else {
-//					Debug.Log ("static vert");
-				}
 		}
 	}
 	
@@ -65,14 +59,9 @@ public class OrientationScript : MonoBehaviour {
 		character_animator.SetFloat ("sqrSpeed", body.velocity.sqrMagnitude);
 	}
 
-	void set_attack() {
-		character_animator.SetBool ("attacking", internal_values.attacking);
-	}
-
 	// Update is called once per frame
 	void Update () {
 		set_orientation();
 		set_speed();
-		set_attack();
 	}
 }

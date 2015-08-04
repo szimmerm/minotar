@@ -3,17 +3,7 @@ using System.Collections;
 
 public class SpawnControlledElement : MonoBehaviour {
 
-	public CreatureSpawner controller;
-
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+	public CreatureSpawner controller = null;
 
 	void OnDestroy() {
 		if(controller != null) {
