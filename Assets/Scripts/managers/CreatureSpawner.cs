@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class CreatureSpawner : MonoBehaviour, IReset {
+public class CreatureSpawner : MonoBehaviour {
 
 	public GameObject[] controlled_creatures;
 	public Transform[] spawn_positions;
@@ -19,7 +19,6 @@ public class CreatureSpawner : MonoBehaviour, IReset {
 	}
 
 	void Start() {
-		ResetScript.register_in_controller (this);
 		start_spawning();
 	}
 
@@ -64,6 +63,7 @@ public class CreatureSpawner : MonoBehaviour, IReset {
 		foreach (SpawnControlledElement spawned_creature in active_creatures) {
 			GameObject.Destroy(spawned_creature.gameObject, 0.0f);
 		}
+		Debug.Log ("spawner reset");
 		start_spawning();
 	}
 

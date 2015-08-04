@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class PathfindingManager : MonoBehaviour, IReset {
+public class PathfindingManager : MonoBehaviour {
 
 	public int width;
 	public int height;
@@ -24,11 +24,6 @@ public class PathfindingManager : MonoBehaviour, IReset {
 		line = gameObject.AddComponent<LineRenderer>();	
 //		display_debuging_positions(); // a utiliser que pour debugger
 	}
-
-	void Start() {
-		ResetScript.register_in_controller (this);
-	}
-	
 	// Update is called once per frame
 	void Update () {
 		graph.build_bfs(position_to_node(player.transform.position)); // trop violent, a modifier/optimiser

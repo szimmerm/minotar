@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class HealthScript : MonoBehaviour, IReset {
+public class HealthScript : MonoBehaviour {
 
 	public int base_health = 10;
 	public int current_health;
@@ -27,12 +27,8 @@ public class HealthScript : MonoBehaviour, IReset {
 		init_values();
 	}
 
-	void Start() {
-		ResetScript.register_in_controller (this);
-	}
-
 	private void init_values() {
-		this.current_health = this.base_health;
+		this.current_health = base_health;
 		init_health_slider();
 	}
 
@@ -42,7 +38,6 @@ public class HealthScript : MonoBehaviour, IReset {
 	}
 
 	public void OnTriggerStay2D(Collider2D collision_data) {
-		Debug.Log ("health collision");
 		if(!this.invulnerable && collision_data.tag == "Minotar") {
 			take_damage();
 		}
@@ -84,13 +79,13 @@ public class HealthScript : MonoBehaviour, IReset {
 	}
 
 	void on_death() {
-		this.game_controller.game_over();
-		this.move_controller.able_to_move = false;
-		this.dash_particles.Stop ();
-		this.dash_particles.Clear ();
+		game_controller.game_over();
+		move_controller.able_to_move = false;
+		dash_particles.Stop ();
+		dash_particles.Clear ();
 		
-		this.invulnerable = true;
-		this.sprite_renderer.enabled = false;
+		invulnerable = true;
+		sprite_renderer.enabled = false;
 
 		Transform skelt = Instantiate(skelt_transform);
 		skelt.position = new Vector3(this.transform.position.x, this.transform.position.y, 1);
@@ -98,15 +93,15 @@ public class HealthScript : MonoBehaviour, IReset {
 
 	public void on_reset() {
 		init_values();
-		this.move_controller.able_to_move = true;
-		this.invulnerable = false;
-		this.dash_particles.Play ();
-		this.sprite_renderer.enabled = true;
+		move_controller.able_to_move = true;
+		invulnerable = false;
+		dash_particles.Play ();
+		sprite_renderer.enabled = true;
 	}
 
 	public void add_health(int value) {
-		this.current_health = (current_health + value) < 5 ? (current_health + value) : 5;
-		this.health_slider.value = this.current_health;
+		current_health = (current_health + value) < 5 ? (current_health + value) : 5;
+		health_slider.value = this.current_health;
 	}
 
 }

@@ -2,34 +2,24 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class GameControllerScript : MonoBehaviour, IReset {
+public class GameControllerScript : MonoBehaviour{
 
 	public bool is_game_over = false;
 	private HighScoreScript high_score;
-	private HashSet<IReset> active_objects;
+//	private HashSet<IReset> active_objects;
 	private CreatureSpawner creature_spawner;
 	private ObstacleSpawner obstacle_spawner;
 
 	void Awake() {
 		high_score = GetComponent<HighScoreScript>();
-		active_objects = new HashSet<IReset>();
+//		active_objects = new HashSet<IReset>();
 		creature_spawner = GameObject.FindGameObjectWithTag("EnemySpawner").GetComponent<CreatureSpawner>();
 		obstacle_spawner = GameObject.FindGameObjectWithTag ("ObstacleSpawner").GetComponent<ObstacleSpawner>();
 	}
 
-	// Use this for initialization
-	void Start () {
-		ResetScript.register_in_controller (this);
-	}
-
 	private void restart() {
-		foreach (IReset component in active_objects) {
-			if (component != null) {
-				component.on_reset();
-			}
-		}
+		this.BroadcastMessage("on_reset");
 		high_score.restart ();
-		obstacle_spawner.restart();
 		
 //		Application.LoadLevel (Application.loadedLevel);
 	}
@@ -41,23 +31,18 @@ public class GameControllerScript : MonoBehaviour, IReset {
 		}
 	}
 
-	public void register_object(IReset comp) {
-		active_objects.Add (comp);
-	}
-
-	public void unregister_object(IReset comp) {
-		active_objects.Remove(comp);
-	}
-
 	public void game_over() {
+		Debug.Log ("game over man");
 		high_score.pause_score ();
 		is_game_over = true;
+		Debug.Log ("game ovism");
 		creature_spawner.stop_spawning();
 		creature_spawner.send_game_over_message();
 		obstacle_spawner.stop_spawning();
 	}
 
 	public void on_reset() {
+		Debug.Log ("reset call on gamecontroller");
 		is_game_over = false;
 	}
 }

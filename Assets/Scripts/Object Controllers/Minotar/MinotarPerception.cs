@@ -1,15 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MinotarPerception : MonoBehaviour, IReset {
+public class MinotarPerception : MonoBehaviour{
 
 	public bool detected = false;
-
-	// Use this for initialization
-
-	void Start() {
-		ResetScript.register_in_controller (this);
-	}
 
 	public void OnTriggerEnter2D() {
 		detected = true;

@@ -4,7 +4,7 @@ using System.Collections;
 
 [RequireComponent (typeof(ObjectValues))]
 [RequireComponent (typeof(MovingObject))]
-public class GamepadControlled : MonoBehaviour, IReset {
+public class GamepadControlled : MonoBehaviour {
 
 	public int max_dash;
 	public float dash_timer = 3f;
@@ -30,7 +30,6 @@ public class GamepadControlled : MonoBehaviour, IReset {
 	
 	// Use this for initialization
 	void Start () {
-		ResetScript.register_in_controller (this);
 	}
 	
 	void update_direction() {

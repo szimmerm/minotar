@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CrowdController : MonoBehaviour, IReset {
+public class CrowdController : MonoBehaviour {
 
 
 	[SerializeField] private float crowd_value;
@@ -28,7 +28,6 @@ public class CrowdController : MonoBehaviour, IReset {
 
 	// Use this for initialization
 	void Start() {
-		ResetScript.register_in_controller (this);
 		high_score = GameObject.FindGameObjectWithTag("GameController").GetComponent<HighScoreScript>();
 		foreach(AudioSource candidate in GetComponentsInChildren<AudioSource>()) {
 			if (candidate.name == "CrowdSound") {

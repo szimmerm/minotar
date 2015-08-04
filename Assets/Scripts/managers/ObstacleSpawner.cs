@@ -103,7 +103,7 @@ public class ObstacleSpawner : MonoBehaviour {
 		}
 	}
 	
-	public void restart() {
+	public void on_reset() {
 		disable_current_pattern();
 		initialize_pattern();
 		InvokeRepeating("spawn_bloc", spawn_delay, spawn_delay);	

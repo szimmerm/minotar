@@ -3,7 +3,7 @@ using System.Collections;
 
 [RequireComponent (typeof(MovingObject))]
 
-public class MissileScript : MonoBehaviour, IReset {
+public class MissileScript : MonoBehaviour {
 
 	public Vector3 target;
 	private ObjectValues values;
@@ -24,7 +24,6 @@ public class MissileScript : MonoBehaviour, IReset {
 		float max_velocity = GetComponent<MovingObject>().max_velocity;
 		float travel_time = (target - transform.position).magnitude / (6*max_velocity);
 		GetComponentInChildren<ProjectileShadow>().set_initial_impulse_from_time(travel_time);
-		ResetScript.register_in_controller (this);
 	}
 	
 	// Update is called once per frame
@@ -62,10 +61,6 @@ public class MissileScript : MonoBehaviour, IReset {
 
 	public virtual void on_reset() {
 //		Destroy(this.gameObject);
-	}
-
-	public void OnDestroy() {
-		ResetScript.unregister_in_controller (this);
 	}
 
 	protected void stop_object() {
