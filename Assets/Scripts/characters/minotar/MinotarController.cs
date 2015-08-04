@@ -12,11 +12,13 @@ public class MinotarController : MonoBehaviour {
 	public bool should_update_speed = true;
 
 	private MovementScript move;
+	private MovementTools tools;
 	private PathfindingManager pathfinder;
 	private bool should_update_direction = true;
 
 	void Awake() {
 		move = GetComponent<MovementScript>();
+		tools = GetComponent<MovementTools>();
 		pathfinder = GameObject.FindGameObjectWithTag ("Pathfinder").GetComponent<PathfindingManager>();
 	}
 
@@ -41,7 +43,7 @@ public class MinotarController : MonoBehaviour {
 			sees_player = false;
 		}
 	}
-	
+
 	private void update_speed() {
 		if (sees_player) {
 			move.max_velocity = run_speed;
@@ -57,5 +59,43 @@ public class MinotarController : MonoBehaviour {
 	private void go_towards_point(Vector2 point) {
 		Vector2 minus = (point - (Vector2)transform.position);
 		move.direction = minus;
+	}
+
+	public void on_taunt_start() {
+		go_towards_point(GameObject.FindGameObjectWithTag("Player").transform.position);
+		should_update_direction = false;
+		should_update_speed = false;
+		foreach(BoxCollider2D box in GetComponentsInChildren<BoxCollider2D>()) {
+			if (box.tag == "Physics") {
+				box.enabled = true;
+			}
+		}
+		StartCoroutine(minotar_charge());
+	}
+
+	private IEnumerator minotar_charge() {
+		move.stop ();
+		move.should_update_speed = false;		
+		yield return new WaitForSeconds(0.3f);
+		move.should_update_speed = true;
+		move.max_velocity = tools.dash_factor * walk_speed;
+	}
+
+	public void on_taunt_end() {
+		foreach(BoxCollider2D box in GetComponentsInChildren<BoxCollider2D>()) {
+			if (box.tag == "Physics") {
+				box.enabled = false;
+			}
+		}
+		should_update_direction = true;
+		should_update_speed = true;
+	}
+
+	
+	public void on_game_over() {
+		move.stop();
+		move.should_update_speed = false;
+		should_update_speed = false;
+		GetComponentInChildren<Animator>().SetTrigger ("playerDead");
 	}
 }

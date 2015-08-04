@@ -4,26 +4,27 @@ using System.Collections;
 public class StopMovementDuringAnimation : StateMachineBehaviour {
 
 	private Transform player;
-	private MovingObject player_controller_script;
+	private MovementScript player_move;
 	private CrowdController crowd_controller;
-	private MinotarWalkRun minotar_controller;
+	private MinotarController minotar_controller;
 
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
 		player = animator.gameObject.transform.root;
-		player_controller_script = player.GetComponent<MovingObject>();
-		player_controller_script.able_to_move = false;
+		player_move = player.GetComponent<MovementScript>();
+		player_move.stop ();
+		player_move.should_update_speed = false;
 		crowd_controller = player.GetComponent<CrowdController>();
 		crowd_controller.crowd_active = false;
 
 		GameObject minotar = GameObject.FindGameObjectWithTag("Minotar");
-		minotar_controller = minotar.transform.root.GetComponentInChildren<MinotarWalkRun>();
-		minotar_controller.force_run = true;
+		minotar_controller = minotar.GetComponent<MinotarController>();
+		minotar_controller.on_taunt_start();
 	}
 	
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
 		player = animator.gameObject.transform;
-		player_controller_script.able_to_move = true;
-		minotar_controller.force_run = false;
+		player_move.should_update_speed = true;
+		minotar_controller.on_taunt_end();
 		crowd_controller.crowd_active = true;
 	}
 }

@@ -15,7 +15,6 @@ public class CreatureSpawner : MonoBehaviour {
 
 	private void Awake() {
 		active_creatures = new HashSet<SpawnControlledElement>();
-//		highscore = GameObject.FindGameObjectWithTag("GameController").GetComponent<HighScoreScript>();
 	}
 
 	void Start() {
@@ -44,11 +43,9 @@ public class CreatureSpawner : MonoBehaviour {
 		yield return new WaitForSeconds(this.spawn_animation_duration);
 
 		GameObject spawn_creature = (GameObject) Instantiate(creature_type, spawn_position, Quaternion.identity);
-//		spawn_creature.transform.parent = this.transform.parent;
+		spawn_creature.transform.parent = this.transform;
 		spawn_creature.GetComponent<SpawnControlledElement>().controller = this;
 		active_creatures.Add (spawn_creature.GetComponent<SpawnControlledElement>());
-//		highscore.register_minotar (spawn_creature.transform);
-//		GameObject.FindGameObjectWithTag ("Player").GetComponent<CrowdController>().register_minotar(spawn_creature.transform);
 	}
 
 	private void register_creature(SpawnControlledElement creature) {
@@ -61,24 +58,18 @@ public class CreatureSpawner : MonoBehaviour {
 
 	public void on_reset() {
 		foreach (SpawnControlledElement spawned_creature in active_creatures) {
-			GameObject.Destroy(spawned_creature.gameObject, 0.0f);
+			GameObject.Destroy(spawned_creature.gameObject);
 		}
-		Debug.Log ("spawner reset");
 		start_spawning();
 	}
 
 	public void start_spawning() {
-		// InvokeRepeating("call_spawn_creature", 1.0f, spawn_interval);
 		call_spawn_creature();
-	}
-	
-	public void stop_spawning() {
-		// CancelInvoke("call_spawn_creature");
 	}
 
 	public void send_game_over_message() {
 		foreach(SpawnControlledElement creature in active_creatures) {
-			creature.GetComponent<MinotarAI>().wins();
+			creature.GetComponent<MinotarController>().on_game_over();
 		}
 	}
 }

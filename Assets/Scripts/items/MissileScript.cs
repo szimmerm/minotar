@@ -60,7 +60,7 @@ public class MissileScript : MonoBehaviour {
 	}
 
 	public virtual void on_reset() {
-//		Destroy(this.gameObject);
+		Destroy(this.gameObject);
 	}
 
 	protected void stop_object() {
