@@ -6,7 +6,6 @@ public class GameControllerScript : MonoBehaviour{
 
 	public bool is_game_over = false;
 	private HighScoreScript high_score;
-//	private HashSet<IReset> active_objects;
 	private CreatureSpawner creature_spawner;
 	private ObstacleSpawner obstacle_spawner;
 
@@ -20,8 +19,6 @@ public class GameControllerScript : MonoBehaviour{
 	private void restart() {
 		this.BroadcastMessage("on_reset");
 		high_score.restart ();
-		
-//		Application.LoadLevel (Application.loadedLevel);
 	}
 	
 	// Update is called once per frame
@@ -32,17 +29,14 @@ public class GameControllerScript : MonoBehaviour{
 	}
 
 	public void game_over() {
-		Debug.Log ("game over man");
 		high_score.pause_score ();
 		is_game_over = true;
-		Debug.Log ("game ovism");
 		creature_spawner.stop_spawning();
 		creature_spawner.send_game_over_message();
 		obstacle_spawner.stop_spawning();
 	}
 
 	public void on_reset() {
-		Debug.Log ("reset call on gamecontroller");
 		is_game_over = false;
 	}
 }

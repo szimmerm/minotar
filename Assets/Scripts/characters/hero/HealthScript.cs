@@ -6,54 +6,55 @@ public class HealthScript : MonoBehaviour {
 
 	public int base_health = 10;
 	public int current_health;
-	public float flash_frames = 30;
-	public Color flash_color;
-	public float invincibility_timer = 0.5f;
+	public Transform corpse;
+
+	public float invincibility_time = 2f;
+	public float blink_time = 0.5f;
 	
 	public Slider health_slider; //a changer pour plus que ça soit public, ca
-	public Transform skelt_transform;
 
 	private SpriteRenderer sprite_renderer;
 	private GameControllerScript game_controller;
-
 	private MovementScript move;
-
 	private bool invulnerable = false;
-	private ParticleSystem dash_particles;
 
+	/* signals */
 	void Awake() {
-		this.sprite_renderer = transform.root.GetComponentInChildren<SpriteRenderer>();
-		this.game_controller = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameControllerScript>();
+		sprite_renderer = transform.root.GetComponentInChildren<SpriteRenderer>();
+		game_controller = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameControllerScript>();
 		move = transform.root.GetComponentInChildren<MovementScript>();
-		this.dash_particles = transform.root.GetComponentInChildren<ParticleSystem>();
 		init_values();
 	}
 
-	private void init_values() {
-		this.current_health = base_health;
-		init_health_slider();
-	}
-
-	private void init_health_slider() {
-		this.health_slider.maxValue = this.base_health;
-		this.health_slider.value = this.current_health;
-	}
-
-	public void OnTriggerStay2D(Collider2D collision_data) {
-		if(!this.invulnerable && collision_data.tag == "Minotar") {
-			take_damage();
+	void OnTriggerStay2D(Collider2D collision_data) {
+		if(!invulnerable && collision_data.tag == "Minotar") {
+			take_damage(1);
 		}
 	}
-
+	
+	void on_reset() {
+		init_values();
+		move.should_update_speed = true;
+		invulnerable = false;
+		sprite_renderer.enabled = true;
+	}
+	
+	/* external actions */
 	public void receive_damage() {
-		if (!this.invulnerable) {
-			take_damage();
+		if (!invulnerable) {
+			take_damage(1);
 		}
 	}
+	
+	public void add_health(int value) {
+		current_health = (current_health + value) < 5 ? (current_health + value) : 5;
+		health_slider.value = this.current_health;
+	}
 
-	private void take_damage() {
-		this.current_health--;
-		this.health_slider.value = this.current_health;
+	/* internal actions */
+	private void take_damage(int damage_value) {
+		current_health -= damage_value;
+		update_slider();
 		if(this.current_health > 0) {
 			StartCoroutine(flash_coroutine());
 		}
@@ -63,49 +64,42 @@ public class HealthScript : MonoBehaviour {
 	}
 
 	IEnumerator flash_coroutine() {
-		if (!this.invulnerable) {
-			this.invulnerable = true;
-			Color original_color = sprite_renderer.color;
-			sprite_renderer.color = flash_color;
-
-			yield return new WaitForSeconds(flash_frames / 120);
-
-			for(int i = (int) Mathf.Floor (flash_frames / 2); i < flash_frames; i++) {
-				sprite_renderer.color = Color.Lerp(flash_color, original_color, i / flash_frames);
-				yield return null;
-			}
-
-			sprite_renderer.color = original_color;
-			this.invulnerable = false;
+		invulnerable = true;
+	
+		for(float num=0f; num < invincibility_time; num+=blink_time) {
+			sprite_renderer.enabled = !sprite_renderer.enabled;
+			yield return new WaitForSeconds(blink_time);
 		}
+
+		sprite_renderer.enabled = true;
+		invulnerable = false;
 	}
 
 	void on_death() {
 		game_controller.game_over();
-		move.stop ();
 		move.should_update_speed = false;
 		move.stop ();
-		dash_particles.Stop ();
-		dash_particles.Clear ();
-		
 		invulnerable = true;
 		sprite_renderer.enabled = false;
 
-		Transform skelt = Instantiate(skelt_transform);
-		skelt.position = new Vector3(this.transform.position.x, this.transform.position.y, 1);
+		if (corpse != null) {
+			Transform skelt = Instantiate(corpse);
+			skelt.position = new Vector3(this.transform.position.x, this.transform.position.y, 1);
+		}
 	}
 
-	public void on_reset() {
-		init_values();
-		move.should_update_speed = true;
-		invulnerable = false;
-		dash_particles.Play ();
-		sprite_renderer.enabled = true;
-	}
 
-	public void add_health(int value) {
-		current_health = (current_health + value) < 5 ? (current_health + value) : 5;
-		health_slider.value = this.current_health;
+	
+	private void init_values() {
+		current_health = base_health;
+		update_slider();
+	}
+	
+	private void update_slider() {
+		if (health_slider != null) {
+			health_slider.maxValue = base_health;
+			health_slider.value = current_health;
+		}
 	}
 
 }
