@@ -20,7 +20,7 @@ public class ResetManager : MonoBehaviour {
 	void on_reset() {
 		foreach (GameObject obj in active_objects) {
 			if (obj != null) {
-				obj.BroadcastMessage("on_reset");
+				obj.BroadcastMessage("on_reset", SendMessageOptions.DontRequireReceiver);
 			}
 		}
 	}

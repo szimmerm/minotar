@@ -20,10 +20,13 @@ public class HealthScript : MonoBehaviour {
 
 	/* signals */
 	void Awake() {
-		sprite_renderer = transform.root.GetComponentInChildren<SpriteRenderer>();
 		game_controller = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameControllerScript>();
 		move = transform.root.GetComponentInChildren<MovementScript>();
 		init_values();
+	}
+
+	void Start() {
+		sprite_renderer = transform.root.GetComponentInChildren<SpriteRenderer>();
 	}
 
 	void OnTriggerStay2D(Collider2D collision_data) {
