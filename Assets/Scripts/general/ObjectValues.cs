@@ -8,16 +8,6 @@ public class ObjectValues : MonoBehaviour {
 	public bool alive = true;
 	public bool attacking = false;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
 	public void on_reset() {
 		alive = true;
 		should_update_direction = true;

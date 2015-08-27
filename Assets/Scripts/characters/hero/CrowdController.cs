@@ -77,6 +77,10 @@ public class CrowdController : MonoBehaviour {
 	
 	private void call_taunt() {
 		transform.root.GetComponentInChildren<Animator>().SetTrigger ("callTaunt");
+		
+		MinotarController minotar_controller = GameObject.FindGameObjectWithTag("Minotar").GetComponent<MinotarController>();
+		minotar_controller.on_taunt_start();
+
 		AudioSource.PlayClipAtPoint(applause_sound, transform.position);
 		crowd_value = 0;
 	}

@@ -6,7 +6,6 @@ public class StopMovementDuringAnimation : StateMachineBehaviour {
 	private Transform player;
 	private MovementScript player_move;
 	private CrowdController crowd_controller;
-	private MinotarController minotar_controller;
 
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
 		player = animator.gameObject.transform.root;
@@ -16,15 +15,11 @@ public class StopMovementDuringAnimation : StateMachineBehaviour {
 		crowd_controller = player.GetComponent<CrowdController>();
 		crowd_controller.crowd_active = false;
 
-		GameObject minotar = GameObject.FindGameObjectWithTag("Minotar");
-		minotar_controller = minotar.GetComponent<MinotarController>();
-		minotar_controller.on_taunt_start();
 	}
 	
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
 		player = animator.gameObject.transform;
 		player_move.should_update_speed = true;
-		minotar_controller.on_taunt_end();
 		crowd_controller.crowd_active = true;
 	}
 }

@@ -30,7 +30,7 @@ public class OrientationScript : MonoBehaviour {
 	private void set_orientation() {
 		Vector2 direction = move.direction;
 
-		if (Mathf.Abs (direction.x) > Mathf.Abs (direction.y) || (direction.y * direction.y < 0.8)) {
+		if (Mathf.Abs (direction.x) > Mathf.Abs (direction.y) || (direction.y * direction.y < 0.1)) {
 			// mouvement majoritairement horizontal
 			if (direction.x > 0) {
 				character_animator.SetInteger ("direction", 1);

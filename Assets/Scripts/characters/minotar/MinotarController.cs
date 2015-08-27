@@ -6,7 +6,7 @@ using System.Collections;
 public class MinotarController : MonoBehaviour {
 
 	public float walk_speed;
-	public float run_speed;
+	public float run_factor;
 
 	public bool sees_player = false;
 	public bool should_update_speed = true;
@@ -16,10 +16,22 @@ public class MinotarController : MonoBehaviour {
 	private PathfindingManager pathfinder;
 	private bool should_update_direction = true;
 
+	private Transform anger_indicator;
+
 	void Awake() {
 		move = GetComponent<MovementScript>();
 		tools = GetComponent<MovementTools>();
 		pathfinder = GameObject.FindGameObjectWithTag ("Pathfinder").GetComponent<PathfindingManager>();
+		foreach(Transform child in GetComponentsInChildren<Transform>()) {
+			if (child.name == "colere") {
+				anger_indicator = child;
+			}
+		}
+		if (anger_indicator == null) {
+			Debug.LogError ("fumee de rage non trouvee");
+		} else {
+			anger_indicator.gameObject.SetActive (false);
+		}
 	}
 
 	// Update is called once per frame
@@ -35,18 +47,20 @@ public class MinotarController : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D other) {
 		if (other.tag == "DetectionZone") {
 			sees_player = true;
+			anger_indicator.gameObject.SetActive (true);
 		}
 	}
 
 	void OnTriggerExit2D(Collider2D other) {
 		if (other.tag == "DetectionZone") {
 			sees_player = false;
+			anger_indicator.gameObject.SetActive (false);
 		}
 	}
 
 	private void update_speed() {
 		if (sees_player) {
-			move.max_velocity = run_speed;
+			move.max_velocity = walk_speed * run_factor;
 		} else {
 			move.max_velocity = walk_speed;
 		}
@@ -62,7 +76,17 @@ public class MinotarController : MonoBehaviour {
 	}
 
 	public void on_taunt_start() {
-		go_towards_point(GameObject.FindGameObjectWithTag("Player").transform.position);
+		StartCoroutine(taunt_reaction());
+	}
+
+	public IEnumerator taunt_reaction() {
+		Transform player = GameObject.FindGameObjectWithTag("Player").transform;
+
+		while(Physics2D.Linecast (transform.position, player.position, 1 << LayerMask.NameToLayer ("Walls")).collider == null){
+			yield return new WaitForFixedUpdate();
+		}
+
+		go_towards_point(player.transform.position);
 		should_update_direction = false;
 		should_update_speed = false;
 		foreach(BoxCollider2D box in GetComponentsInChildren<BoxCollider2D>()) {
@@ -70,7 +94,9 @@ public class MinotarController : MonoBehaviour {
 				box.enabled = true;
 			}
 		}
-		StartCoroutine(minotar_charge());
+		yield return StartCoroutine(minotar_charge());
+		yield return new WaitForSeconds(2f);
+		on_taunt_end();
 	}
 
 	private IEnumerator minotar_charge() {
@@ -97,5 +123,6 @@ public class MinotarController : MonoBehaviour {
 		move.should_update_speed = false;
 		should_update_speed = false;
 		GetComponentInChildren<Animator>().SetTrigger ("playerDead");
+		StopCoroutine(taunt_reaction());
 	}
 }
