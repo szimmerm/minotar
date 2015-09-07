@@ -3,12 +3,13 @@ using System.Collections;
 
 public class CrowdController : MonoBehaviour {
 	public bool active = true;
-	public bool taunt_called;
 
 	[SerializeField] private float crowd_value;
 	public float taunt_cap;
 	public float max_crowd_value;
 	public float taunt_score_value;
+	public float taunt_duration;
+	private bool can_taunt = true;
 	
 	private bool low_crowd = true;
 	private AudioSource sound_source;
@@ -20,6 +21,8 @@ public class CrowdController : MonoBehaviour {
 	private GameControllerScript game_controller;
 	private HighScoreScript high_score;
 	private MinotarPerception perception;
+
+	private PlayerController player; // a modifier
 
 	void Awake() {
 		crowd_value = 0;
@@ -41,6 +44,7 @@ public class CrowdController : MonoBehaviour {
 
 		game_controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameControllerScript>();
 		perception = GetComponentInChildren<MinotarPerception>();
+		player = GetComponent<PlayerController>();
 	}
 	
 	// Update is called once per frame
@@ -48,18 +52,6 @@ public class CrowdController : MonoBehaviour {
 		if (active) {
 			update_crowd_value();
 
-			taunt_called = Input.GetButtonDown("Taunt");
-
-			if (taunt_called && (crowd_value >= taunt_cap)) {
-				call_taunt();
-				high_score.add_score(taunt_score_value);
-			}
-	/*
-			if (Input.GetButtonDown ("Taunt") && (crowd_value >= taunt_cap))  {
-				call_taunt();
-				high_score.add_score(taunt_score_value);
-			}
-	*/
 			if ((low_crowd && crowd_value > taunt_cap) || (!low_crowd && crowd_value < taunt_cap)) {
 				switch_sound();
 			}
@@ -76,6 +68,7 @@ public class CrowdController : MonoBehaviour {
 	}
 
 	public void on_gameover() {
+		StopCoroutine(taunt_coroutine());
 		active = false;
 	}
 
@@ -83,15 +76,24 @@ public class CrowdController : MonoBehaviour {
 		float new_value = perception.detected ? Time.deltaTime  : 0;
 		crowd_value = Mathf.Min (max_crowd_value, crowd_value + new_value);
 	}
+
+	public bool taunt_checking() {
+		return (crowd_value >= taunt_cap) && can_taunt;
+	}
 	
-	private void call_taunt() {
-		transform.root.GetComponentInChildren<Animator>().SetTrigger ("callTaunt");
-		
+	public IEnumerator taunt_coroutine() {
+		high_score.add_score(taunt_score_value);
+		transform.root.GetComponentInChildren<Animator>().SetBool ("tauntFinished", false);
+		transform.root.GetComponentInChildren<Animator>().SetTrigger ("tauntTrigger");
 		MinotarController minotar_controller = GameObject.FindGameObjectWithTag("Minotar").GetComponent<MinotarController>();
 		minotar_controller.on_taunt_start();
 
 		AudioSource.PlayClipAtPoint(applause_sound, transform.position);
 		crowd_value = 0;
+		can_taunt = false;
+		yield return new WaitForSeconds(taunt_duration);
+		can_taunt = true;
+		transform.root.GetComponentInChildren<Animator>().SetBool ("tauntFinished", true);
 	}
 
 	private void switch_sound() {
