@@ -87,7 +87,7 @@ public class PathfindingManager : MonoBehaviour {
 	}
 
 
-	private bool is_shortcut_valid(Vector2 start, Vector2 end) {
+	public bool is_shortcut_valid(Vector2 start, Vector2 end) {
 //		return Physics2D.Linecast (start, end, 1 << LayerMask.NameToLayer ("Walls")).collider == null;
 
 		Vector2 direction = end - start;
@@ -95,6 +95,19 @@ public class PathfindingManager : MonoBehaviour {
 		float distance = Vector2.Distance (start, end);
 
 		return Physics2D.BoxCast (start, size, 0f, direction, distance, 1 << LayerMask.NameToLayer ("Walls")).collider == null;
+	}
+
+	public bool has_line_to_player(Vector2 start) {
+		Vector2 direction = (Vector2)player.transform.position - start;
+		Vector2 size = new Vector2(25, 25);
+		float distance = Vector2.Distance (start, player.transform.position);
+
+		Collider2D target = Physics2D.BoxCast (start, size, 0f, direction, distance, 1 << LayerMask.NameToLayer ("Walls") | 1 << LayerMask.NameToLayer ("HeroHitbox")).collider;
+		if (target == null) {
+			return false;
+		} else {
+			return target.transform.root.tag == "Player";
+		}
 	}
 
 	public Vector3 get_smooth_next_move(Vector3 object_position) {

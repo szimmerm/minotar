@@ -45,7 +45,7 @@ public class PlayerController : MonoBehaviour {
 		transform.position = start_position;
 		can_dash = true;
 		should_update_direction = true;
-		StopCoroutine(tools.dash_coroutine ());
+		StopCoroutine(tools.dash_coroutine (true));
 		StopCoroutine(dash_delay_coroutine());
 		GetComponent<Rigidbody2D>().velocity = Vector3.zero;
 	}
@@ -59,7 +59,7 @@ public class PlayerController : MonoBehaviour {
 
 	public void call_dash() {
 		if(move.direction.sqrMagnitude > 0.0001f) {
-			StartCoroutine(tools.dash_coroutine());
+			StartCoroutine(tools.dash_coroutine(true));
 			StartCoroutine(dash_delay_coroutine());
 		}
 	}

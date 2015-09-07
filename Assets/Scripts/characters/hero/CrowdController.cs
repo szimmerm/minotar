@@ -2,18 +2,15 @@
 using System.Collections;
 
 public class CrowdController : MonoBehaviour {
-
+	public bool active = true;
+	public bool taunt_called;
 
 	[SerializeField] private float crowd_value;
 	public float taunt_cap;
 	public float max_crowd_value;
 	public float taunt_score_value;
-	private HighScoreScript high_score;
 	
 	private bool low_crowd = true;
-
-	private MinotarPerception perception;
-
 	private AudioSource sound_source;
 	public AudioClip low_crowd_sound;
 	public AudioClip high_crowd_sound;
@@ -21,6 +18,8 @@ public class CrowdController : MonoBehaviour {
 
 	public bool crowd_active = true;
 	private GameControllerScript game_controller;
+	private HighScoreScript high_score;
+	private MinotarPerception perception;
 
 	void Awake() {
 		crowd_value = 0;
@@ -46,16 +45,21 @@ public class CrowdController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (!game_controller.is_game_over) {
-			if (crowd_active) {
-				update_crowd_value();
-			}
-	
-			if (Input.GetButtonDown ("Taunt") && (crowd_value >= taunt_cap)) {
+		if (active) {
+			update_crowd_value();
+
+			taunt_called = Input.GetButtonDown("Taunt");
+
+			if (taunt_called && (crowd_value >= taunt_cap)) {
 				call_taunt();
 				high_score.add_score(taunt_score_value);
 			}
-	
+	/*
+			if (Input.GetButtonDown ("Taunt") && (crowd_value >= taunt_cap))  {
+				call_taunt();
+				high_score.add_score(taunt_score_value);
+			}
+	*/
 			if ((low_crowd && crowd_value > taunt_cap) || (!low_crowd && crowd_value < taunt_cap)) {
 				switch_sound();
 			}
@@ -63,11 +67,16 @@ public class CrowdController : MonoBehaviour {
 	}
 
 	public void on_reset() {
+		active = true;
 		crowd_value = 0;
 		sound_source.clip = low_crowd_sound;
 		sound_source.Play ();
 		low_crowd = true;
 		crowd_active = true;
+	}
+
+	public void on_gameover() {
+		active = false;
 	}
 
 	private void update_crowd_value() {

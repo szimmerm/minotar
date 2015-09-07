@@ -37,7 +37,6 @@ public class HealthScript : MonoBehaviour {
 	
 	void on_reset() {
 		init_values();
-		move.should_update_speed = true;
 		invulnerable = false;
 		sprite_renderer.enabled = true;
 	}
@@ -80,7 +79,6 @@ public class HealthScript : MonoBehaviour {
 
 	void on_death() {
 		game_controller.game_over();
-		move.should_update_speed = false;
 		move.stop ();
 		invulnerable = true;
 		sprite_renderer.enabled = false;
@@ -90,8 +88,6 @@ public class HealthScript : MonoBehaviour {
 			skelt.position = new Vector3(this.transform.position.x, this.transform.position.y, 1);
 		}
 	}
-
-
 	
 	private void init_values() {
 		current_health = base_health;

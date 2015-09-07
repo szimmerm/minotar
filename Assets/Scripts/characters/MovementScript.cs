@@ -4,7 +4,6 @@ using System.Collections;
 [RequireComponent (typeof(Rigidbody2D))]
 public class MovementScript : MonoBehaviour {
 
-	public bool should_update_speed = true;
 	public Vector2 direction;
 	public float max_velocity;
 	public float acceleration;
@@ -16,13 +15,12 @@ public class MovementScript : MonoBehaviour {
 	}
 
 	void FixedUpdate() {
-		if (should_update_speed) {
-			update_speed();
-		}
+		update_speed();
 	}
 
 	public void stop() {
 		body.velocity = Vector3.zero;
+		direction = Vector2.zero;
 	}
 
 	private void update_speed() {

@@ -5,8 +5,11 @@ using System.Collections;
 
 public class MinotarController : MonoBehaviour {
 
-	public float walk_speed;
-	public float run_factor;
+	public enum States {walk, stop, charge, taunted};
+
+	public float walk_speed = 50;
+	public float run_speed = 80;
+	public float charge_speed = 200;
 
 	public bool sees_player = false;
 	public bool should_update_speed = true;
@@ -14,9 +17,11 @@ public class MinotarController : MonoBehaviour {
 	private MovementScript move;
 	private MovementTools tools;
 	private PathfindingManager pathfinder;
-	private bool should_update_direction = true;
+	private SpeedVariation speed_manager;
 
 	private Transform anger_indicator;
+	public States state;
+	private float current_speed;
 
 	void Awake() {
 		move = GetComponent<MovementScript>();
@@ -32,15 +37,28 @@ public class MinotarController : MonoBehaviour {
 		} else {
 			anger_indicator.gameObject.SetActive (false);
 		}
+		state = States.walk;
+		speed_manager = GetComponent<SpeedVariation>();
+	}
+
+	void Start() {
+//		move.max_velocity = walk_speed;
 	}
 
 	// Update is called once per frame
 	void Update () {
-		if(should_update_direction) {
-			update_direction();
-		}
-		if (should_update_speed) {
-			update_speed();
+		switch(state) {
+			case States.walk:
+				update_direction();
+//				update_speed();
+				break;
+
+			case States.charge:
+				break;
+
+			case States.stop:
+				move.stop ();
+				break;
 		}
 	}
 
@@ -58,14 +76,6 @@ public class MinotarController : MonoBehaviour {
 		}
 	}
 
-	private void update_speed() {
-		if (sees_player) {
-			move.max_velocity = walk_speed * run_factor;
-		} else {
-			move.max_velocity = walk_speed;
-		}
-	}
-
 	private void update_direction() {
 		go_towards_point(pathfinder.get_smooth_next_move(transform.position));
 	}
@@ -80,31 +90,34 @@ public class MinotarController : MonoBehaviour {
 	}
 
 	public IEnumerator taunt_reaction() {
+		Debug.Log ("reacting to taunt");
 		Transform player = GameObject.FindGameObjectWithTag("Player").transform;
 
-		while(Physics2D.Linecast (transform.position, player.position, 1 << LayerMask.NameToLayer ("Walls")).collider == null){
+//		while(Physics2D.Linecast (transform.position, player.position, 1 << LayerMask.NameToLayer ("Walls")).collider == null){
+		while (!pathfinder.has_line_to_player(transform.position)) {
 			yield return new WaitForFixedUpdate();
 		}
 
 		go_towards_point(player.transform.position);
-		should_update_direction = false;
-		should_update_speed = false;
+//		should_update_direction = false;
+//		should_update_speed = false;
 		foreach(BoxCollider2D box in GetComponentsInChildren<BoxCollider2D>()) {
 			if (box.tag == "Physics") {
 				box.enabled = true;
 			}
 		}
+		speed_manager.start_charge();
 		yield return StartCoroutine(minotar_charge());
 		yield return new WaitForSeconds(2f);
 		on_taunt_end();
 	}
 
 	private IEnumerator minotar_charge() {
+		Vector2 target = move.direction;
 		move.stop ();
-		move.should_update_speed = false;		
-		yield return new WaitForSeconds(0.3f);
-		move.should_update_speed = true;
-		move.max_velocity = tools.dash_factor * walk_speed;
+		state = States.charge;
+		yield return new WaitForSeconds(1f);
+		move.direction = target;
 	}
 
 	public void on_taunt_end() {
@@ -113,15 +126,17 @@ public class MinotarController : MonoBehaviour {
 				box.enabled = false;
 			}
 		}
-		should_update_direction = true;
-		should_update_speed = true;
+		state = States.walk;
+//		should_update_direction = true;
+//		should_update_speed = true;
+		speed_manager.stop_charge();
 	}
 
-	
 	public void on_game_over() {
 		move.stop();
-		move.should_update_speed = false;
-		should_update_speed = false;
+		state = States.stop;
+//		move.should_update_speed = false;
+//		should_update_speed = false;
 		GetComponentInChildren<Animator>().SetTrigger ("playerDead");
 		StopCoroutine(taunt_reaction());
 	}

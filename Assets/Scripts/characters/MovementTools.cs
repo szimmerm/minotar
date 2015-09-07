@@ -47,7 +47,7 @@ public class MovementTools : MonoBehaviour {
 		}
 	}
 	
-	public IEnumerator dash_coroutine() {
+	public IEnumerator dash_coroutine(bool clever) {
 		// original setup
 		float original_drag = body.drag;
 		body.drag = 0;
@@ -56,10 +56,8 @@ public class MovementTools : MonoBehaviour {
 		
 		// dash happening
 		body.velocity = move.max_velocity * dash_factor * move.direction.normalized;
-		move.should_update_speed = false;
-		yield return new WaitForSeconds(compute_full_dash_time());
+		yield return new WaitForSeconds(clever ? compute_full_dash_time() : dash_time);
 		body.velocity = Vector2.zero;
-		move.should_update_speed = true;
 		
 		// back to normal
 		body.drag = original_drag;

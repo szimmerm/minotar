@@ -11,7 +11,7 @@ public class StopMovementDuringAnimation : StateMachineBehaviour {
 		player = animator.gameObject.transform.root;
 		player_move = player.GetComponent<MovementScript>();
 		player_move.stop ();
-		player_move.should_update_speed = false;
+//		player_move.should_update_speed = false;
 		crowd_controller = player.GetComponent<CrowdController>();
 		crowd_controller.crowd_active = false;
 
@@ -19,7 +19,7 @@ public class StopMovementDuringAnimation : StateMachineBehaviour {
 	
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
 		player = animator.gameObject.transform;
-		player_move.should_update_speed = true;
+//		player_move.should_update_speed = true;
 		crowd_controller.crowd_active = true;
 	}
 }
