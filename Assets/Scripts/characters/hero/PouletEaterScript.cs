@@ -9,6 +9,7 @@ public class PouletEaterScript : MonoBehaviour {
 
 	private HealthScript player_health;
 	private HighScoreScript score;
+	private NauseeScript nausee;
 
 	public void OnTriggerEnter2D(Collider2D other) {
 		if (other.transform.root.tag == "Item") {
@@ -18,11 +19,13 @@ public class PouletEaterScript : MonoBehaviour {
 				case "Poulet":
 					player_health.add_health(poulet_health);
 					score.add_score(poulet_score);
+					nausee.add_nausee(1);
 					Destroy(other.transform.root.gameObject);
 					break;
 				case "Vin":
 					player_health.add_health (vin_health);
 					score.add_score (vin_score);
+					nausee.add_nausee(2);
 					Destroy(other.transform.root.gameObject);
 					break;
 			}
@@ -33,5 +36,6 @@ public class PouletEaterScript : MonoBehaviour {
 	void Start () {
 		player_health = GetComponentInChildren<HealthScript>();
 		score = GameObject.FindGameObjectWithTag("GameController").GetComponent<HighScoreScript>();
+		nausee = GetComponentInChildren<NauseeScript>();
 	}
 }

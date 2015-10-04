@@ -5,6 +5,7 @@ using System.Collections;
 public class MovementScript : MonoBehaviour {
 
 	public Vector2 direction;
+	public float max_velocity_factor = 1;
 	public float max_velocity;
 	public float acceleration;
 
@@ -29,7 +30,7 @@ public class MovementScript : MonoBehaviour {
 		} else {
 			Vector2 base_direction = Vector2.ClampMagnitude (direction, 1.0f);
 			body.AddForce (acceleration * base_direction);
-			body.velocity = Vector3.ClampMagnitude (body.velocity, max_velocity);		
+			body.velocity = Vector3.ClampMagnitude (body.velocity, max_velocity * max_velocity_factor);
 		}
 	}
 }
