@@ -4,6 +4,8 @@ using System.Collections;
 
 public class HealthScript : MonoBehaviour {
 
+	public bool isHero = false;
+
 	public int base_health = 10;
 	public int current_health;
 	public Transform corpse;
@@ -43,6 +45,7 @@ public class HealthScript : MonoBehaviour {
 	
 	/* external actions */
 	public void receive_damage() {
+		Debug.Log ("outch boum !");
 		if (!invulnerable) {
 			take_damage(1);
 		}
@@ -50,7 +53,7 @@ public class HealthScript : MonoBehaviour {
 	
 	public void add_health(int value) {
 		current_health = (current_health + value) < 5 ? (current_health + value) : 5;
-		health_slider.value = this.current_health;
+		update_slider();
 	}
 
 	/* internal actions */
@@ -78,14 +81,19 @@ public class HealthScript : MonoBehaviour {
 	}
 
 	void on_death() {
-		game_controller.game_over();
-		move.stop ();
-		invulnerable = true;
-		sprite_renderer.enabled = false;
-
+		if (isHero) {
+			game_controller.game_over();
+			move.stop ();
+			invulnerable = true;
+			sprite_renderer.enabled = false;
+		}
 		if (corpse != null) {
 			Transform skelt = Instantiate(corpse);
 			skelt.position = new Vector3(this.transform.position.x, this.transform.position.y, 1);
+		} else {
+			// Destroy(this.gameObject);
+			Debug.Log ("arg burgl");
+			this.gameObject.SetActive (false);
 		}
 	}
 	

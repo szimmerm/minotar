@@ -24,7 +24,6 @@ public class NauseeScript : MonoBehaviour {
 		for (int i = 0; i < 5; i++) {
 			if (nausee_value <= (nausee_gap*i)) {
 				move.max_velocity_factor = 1 - (1*nausee_effect*i);
-				Debug.Log ("factor : "+i);
 				break;
 			}
 		}
@@ -32,6 +31,5 @@ public class NauseeScript : MonoBehaviour {
 
 	public void add_nausee (int value) {
 		nausee_value += nausee_gap * value;
-		Debug.Log ("pouetpouet : "+nausee_value);
 	}
 }

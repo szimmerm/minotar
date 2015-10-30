@@ -33,19 +33,19 @@ public class OrientationScript : MonoBehaviour {
 		if (Mathf.Abs (direction.x) > Mathf.Abs (direction.y) || (direction.y * direction.y < 0.1)) {
 			// mouvement majoritairement horizontal
 			if (direction.x > 0) {
-				character_animator.SetInteger ("direction", 1);
+				character_animator.SetFloat ("Direction", 0);
 				transform.localScale = set_x(transform.localScale, -1);
 			} else if (direction.x < 0) {
-				character_animator.SetInteger ("direction", 2);
+				character_animator.SetFloat ("Direction", 0);
 				transform.localScale = set_x(transform.localScale, 1);
 			} 
 		} else {
 			// mouvement majoritairement vertical
 			if (direction.y > 0) {
-				character_animator.SetInteger ("direction", 3);
+				character_animator.SetFloat ("Direction", 3);
 				transform.localScale = set_x(transform.localScale, 1);
 			} else if (direction.y < 0) {
-				character_animator.SetInteger ("direction", 4);
+				character_animator.SetFloat ("Direction", 4);
 				transform.localScale = set_x(transform.localScale, 1);
 			}
 		}
