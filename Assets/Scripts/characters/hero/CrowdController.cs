@@ -84,7 +84,7 @@ public class CrowdController : MonoBehaviour {
 	public IEnumerator taunt_coroutine() {
 		high_score.add_score(taunt_score_value);
 		transform.root.GetComponentInChildren<Animator>().SetBool ("tauntFinished", false);
-		transform.root.GetComponentInChildren<Animator>().SetTrigger ("tauntTrigger");
+//		transform.root.GetComponentInChildren<Animator>().SetTrigger ("tauntTrigger");
 		MinotarController minotar_controller = GameObject.FindGameObjectWithTag("Minotar").GetComponent<MinotarController>();
 		minotar_controller.on_taunt_start();
 
@@ -92,6 +92,7 @@ public class CrowdController : MonoBehaviour {
 		crowd_value = 0;
 		can_taunt = false;
 		yield return new WaitForSeconds(taunt_duration);
+		minotar_controller.on_taunt_end();
 		can_taunt = true;
 		transform.root.GetComponentInChildren<Animator>().SetBool ("tauntFinished", true);
 	}

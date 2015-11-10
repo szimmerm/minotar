@@ -5,11 +5,13 @@ using System.Collections;
 
 public class MinotarController : MonoBehaviour {
 
-	public enum States {walk, stop, charge, taunted};
+	public enum States {walk, stop, charge, taunted, prepare_charge};
 
 	public float walk_speed = 50;
 	public float run_speed = 80;
 	public float charge_speed = 200;
+
+	public float charge_loading_time = 1;
 
 	public bool sees_player = false;
 	public bool should_update_speed = true;
@@ -23,10 +25,13 @@ public class MinotarController : MonoBehaviour {
 	public States state;
 	private float current_speed;
 
+	private Animator animator;
+
 	void Awake() {
 		move = GetComponent<MovementScript>();
 		tools = GetComponent<MovementTools>();
 		pathfinder = GameObject.FindGameObjectWithTag ("Pathfinder").GetComponent<PathfindingManager>();
+		animator = GetComponentInChildren<Animator>();
 		foreach(Transform child in GetComponentsInChildren<Transform>()) {
 			if (child.name == "colere") {
 				anger_indicator = child;
@@ -45,9 +50,14 @@ public class MinotarController : MonoBehaviour {
 //		move.max_velocity = walk_speed;
 	}
 
+	bool playerInLineOfSight() {
+		return pathfinder.has_line_to_player(transform.position);
+	}
+
 	// Update is called once per frame
 	void Update () {
 		switch(state) {
+			case States.taunted:
 			case States.walk:
 				update_direction();
 //				update_speed();
@@ -56,8 +66,21 @@ public class MinotarController : MonoBehaviour {
 			case States.charge:
 				break;
 
+			case States.prepare_charge:
 			case States.stop:
 				move.stop ();
+				break;
+		}
+	}
+
+	void FixedUpdate() {
+		switch(state) {
+			case States.taunted:
+				if (playerInLineOfSight()) {
+					state = States.prepare_charge;
+					move.stop ();
+					StartCoroutine(wait_then_charge());
+				}
 				break;
 		}
 	}
@@ -76,6 +99,29 @@ public class MinotarController : MonoBehaviour {
 		}
 	}
 
+	private IEnumerator wait_then_charge() {
+		animator.SetFloat("State", 2f);
+		yield return new WaitForSeconds(charge_loading_time);
+		update_direction();
+		animator.SetFloat ("State", 1f);
+		state = States.charge;
+		speed_manager.start_charge ();
+		foreach(BoxCollider2D box in GetComponentsInChildren<BoxCollider2D>()) {
+			if (box.tag == "Physics") {
+				box.enabled = true;
+			}
+		}
+		yield return new WaitForSeconds(1f);
+		state = States.walk;
+		speed_manager.stop_charge ();
+		foreach(BoxCollider2D box in GetComponentsInChildren<BoxCollider2D>()) {
+			if (box.tag == "Physics") {
+				box.enabled = false;
+			}
+		}
+		animator.SetFloat ("State", 0f);
+	}
+
 	private void update_direction() {
 		go_towards_point(pathfinder.get_smooth_next_move(transform.position));
 	}
@@ -86,9 +132,11 @@ public class MinotarController : MonoBehaviour {
 	}
 
 	public void on_taunt_start() {
-		StartCoroutine(taunt_reaction());
+//		StartCoroutine(taunt_reaction());
+		state = States.taunted;
 	}
 
+/*
 	public IEnumerator taunt_reaction() {
 		Debug.Log ("reacting to taunt");
 		Transform player = GameObject.FindGameObjectWithTag("Player").transform;
@@ -119,17 +167,11 @@ public class MinotarController : MonoBehaviour {
 		yield return new WaitForSeconds(1f);
 		move.direction = target;
 	}
-
+*/
 	public void on_taunt_end() {
-		foreach(BoxCollider2D box in GetComponentsInChildren<BoxCollider2D>()) {
-			if (box.tag == "Physics") {
-				box.enabled = false;
-			}
+		if (state == States.taunted) {
+			state = States.walk;
 		}
-		state = States.walk;
-//		should_update_direction = true;
-//		should_update_speed = true;
-		speed_manager.stop_charge();
 	}
 
 	public void on_game_over() {
@@ -138,6 +180,6 @@ public class MinotarController : MonoBehaviour {
 //		move.should_update_speed = false;
 //		should_update_speed = false;
 		GetComponentInChildren<Animator>().SetTrigger ("playerDead");
-		StopCoroutine(taunt_reaction());
+		StopCoroutine(wait_then_charge());
 	}
 }

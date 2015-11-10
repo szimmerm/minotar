@@ -20,6 +20,8 @@ public class HealthScript : MonoBehaviour {
 	private MovementScript move;
 	private bool invulnerable = false;
 
+	public bool hurt_by_minotar = false;
+
 	/* signals */
 	void Awake() {
 		game_controller = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameControllerScript>();
@@ -32,7 +34,7 @@ public class HealthScript : MonoBehaviour {
 	}
 
 	void OnTriggerStay2D(Collider2D collision_data) {
-		if(!invulnerable && collision_data.tag == "Minotar") {
+		if(!invulnerable && collision_data.tag == "Minotar" && hurt_by_minotar) {
 			take_damage(1);
 		}
 	}

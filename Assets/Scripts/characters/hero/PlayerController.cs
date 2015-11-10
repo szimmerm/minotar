@@ -45,7 +45,6 @@ public class PlayerController : MonoBehaviour {
 				break;
 			case States.taunt:
 				move.stop ();
-				Debug.Log ("pipipidpipioupdidpazidp");
 				break;
 			case States.walk:
 				update_direction();
@@ -81,10 +80,8 @@ public class PlayerController : MonoBehaviour {
 
 	private IEnumerator taunt_call() {
 		state = States.taunt;
-		Debug.Log ("stetaunt");
 		yield return StartCoroutine(crowd.taunt_coroutine ());
 		state = States.walk;
-		Debug.Log ("finished");
 	}
 
 	public void call_dash() {
