@@ -19,13 +19,16 @@ public class HealthScript : MonoBehaviour {
 	private GameControllerScript game_controller;
 	private MovementScript move;
 	private bool invulnerable = false;
+	private Animator animator;
 
 	public bool hurt_by_minotar = false;
+	public bool hurt_animation = false;
 
 	/* signals */
 	void Awake() {
 		game_controller = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameControllerScript>();
 		move = transform.root.GetComponentInChildren<MovementScript>();
+		animator = transform.root.GetComponentInChildren<Animator>();
 		init_values();
 	}
 
@@ -47,7 +50,6 @@ public class HealthScript : MonoBehaviour {
 	
 	/* external actions */
 	public void receive_damage() {
-		Debug.Log ("outch boum !");
 		if (!invulnerable) {
 			take_damage(1);
 		}
@@ -63,7 +65,8 @@ public class HealthScript : MonoBehaviour {
 		current_health -= damage_value;
 		update_slider();
 		if(this.current_health > 0) {
-			StartCoroutine(flash_coroutine());
+			if (hurt_animation)
+				StartCoroutine(flash_coroutine());
 		}
 		else {
 			on_death();
@@ -72,12 +75,12 @@ public class HealthScript : MonoBehaviour {
 
 	IEnumerator flash_coroutine() {
 		invulnerable = true;
-	
+		animator.SetBool("hurt", true);
 		for(float num=0f; num < invincibility_time; num+=blink_time) {
 			sprite_renderer.enabled = !sprite_renderer.enabled;
 			yield return new WaitForSeconds(blink_time);
 		}
-
+		animator.SetBool ("hurt", false);
 		sprite_renderer.enabled = true;
 		invulnerable = false;
 	}
