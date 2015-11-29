@@ -20,6 +20,7 @@ public class HealthScript : MonoBehaviour {
 	private MovementScript move;
 	private bool invulnerable = false;
 	private Animator animator;
+	private Transform parent_transform;
 
 	public bool hurt_by_minotar = false;
 	public bool hurt_animation = false;
@@ -27,13 +28,13 @@ public class HealthScript : MonoBehaviour {
 	/* signals */
 	void Awake() {
 		game_controller = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameControllerScript>();
-		move = transform.root.GetComponentInChildren<MovementScript>();
-		animator = transform.root.GetComponentInChildren<Animator>();
+		move = parent_transform.GetComponentInChildren<MovementScript>();
+		animator = parent_transform.GetComponentInChildren<Animator>();
 		init_values();
 	}
 
 	void Start() {
-		sprite_renderer = transform.root.GetComponentInChildren<SpriteRenderer>();
+		sprite_renderer = parent_transform.GetComponentInChildren<SpriteRenderer>();
 	}
 
 	void OnTriggerStay2D(Collider2D collision_data) {
@@ -69,7 +70,7 @@ public class HealthScript : MonoBehaviour {
 				StartCoroutine(flash_coroutine());
 		}
 		else {
-			on_death();
+			get_killed();
 		}
 	}
 
@@ -77,29 +78,35 @@ public class HealthScript : MonoBehaviour {
 		invulnerable = true;
 		animator.SetBool("hurt", true);
 		for(float num=0f; num < invincibility_time; num+=blink_time) {
-			sprite_renderer.enabled = !sprite_renderer.enabled;
+//			sprite_renderer.enabled = !sprite_renderer.enabled;
 			yield return new WaitForSeconds(blink_time);
 		}
 		animator.SetBool ("hurt", false);
-		sprite_renderer.enabled = true;
+//		sprite_renderer.enabled = true;
 		invulnerable = false;
 	}
 
-	void on_death() {
+	void get_killed() {
 		if (isHero) {
 			game_controller.game_over();
 			move.stop ();
 			invulnerable = true;
 			sprite_renderer.enabled = false;
 		}
+		if(parent_transform != null) {
+			parent_transform.BroadcastMessage("on_death");
+		} else {
+			gameObject.BroadcastMessage("on_death");
+		}
+		Debug.Log ("LA MORT FRAPPE");
+/*
 		if (corpse != null) {
 			Transform skelt = Instantiate(corpse);
 			skelt.position = new Vector3(this.transform.position.x, this.transform.position.y, 1);
 		} else {
-			// Destroy(this.gameObject);
-			Debug.Log ("arg burgl");
 			this.gameObject.SetActive (false);
 		}
+*/
 	}
 	
 	private void init_values() {
@@ -114,4 +121,7 @@ public class HealthScript : MonoBehaviour {
 		}
 	}
 
+	public void set_parent(Transform parent) {
+		parent_transform = parent;			
+	}
 }

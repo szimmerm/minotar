@@ -130,7 +130,6 @@ public class PathfindingManager : MonoBehaviour {
 				return current;
 			}
 		}
-
 		return Vector3.zero; // ne devrait pas etre utilise
 	}
 
@@ -145,5 +144,10 @@ public class PathfindingManager : MonoBehaviour {
 
 	public Vector3 get_random_tile() {
 		return node_to_position(graph.get_random_node ());
+	}
+
+	public void remove_node(Vector3 position) {
+		Node node = position_to_node(position);
+		graph.remove_node(node);
 	}
 }

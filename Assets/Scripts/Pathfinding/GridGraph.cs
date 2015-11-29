@@ -31,6 +31,16 @@ public class GridGraph {
 		}
 	}
 
+	public void remove_node(Node candidate) {
+		HashSet<Node> res = new HashSet<Node>();
+		foreach (Node node in blocking_nodes) {
+			if (node.pos_x != candidate.pos_x && node.pos_y != candidate.pos_y) {
+				res.Add (node);
+			}
+		}
+		blocking_nodes = res;
+	}
+
 	private void put_node(Node node, List<Node> res) {
 		res.Add(node);
 	}
